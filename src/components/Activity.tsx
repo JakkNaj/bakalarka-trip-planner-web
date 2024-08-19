@@ -1,22 +1,21 @@
-import {Activity} from "../types/activities/ActivitiesTypes.ts";
+import {ActivityType} from "../types/activities/ActivitiesTypes.ts";
 
 type ActivityProps = {
-    activity: Activity;
-    navigateToEdit: (number) => void;
-}
+    activity: ActivityType;
+    navigateToEditActivity: (number) => void;
+};
 
-export const ActivityComponent = ( props : ActivityProps) => {
-    const {activity} = props.activity;
-
+export const Activity = ( props : ActivityProps ) => {
+    const activity = props.activity;
+    console.log(activity);
     return (
         <div>
-            <h1>Activity</h1>
-            <h3>id: {activity.id}</h3>
-            <h3>title: {activity.title}</h3>
-            <h3>description: {activity.description}</h3>
-            <h3>date_start: {activity.date_start}</h3>
-            <h3>date_end: {activity.date_end}</h3>
-            <button onClick={() => props.navigateToEdit(activity.id)}>edit</button>
+            <h2>Activity</h2>
+            <p>id: {activity.activity_id}</p>
+            <p>name: {activity.name}</p>
+            <p>timestamp_start: {activity.timestamp_start}</p>
+            <p>timestamp_end: {activity.timestamp_end}</p>
+            <button onClick={() => props.navigateToEditActivity(activity.activity_id)}>edit</button>
         </div>
     )
 }

@@ -1,6 +1,6 @@
-import {ActivityType} from "./BaseActivityTypes.ts";
+import {ActivityTypes} from "./BaseActivityTypes.ts";
 
-export type Activity =
+export type ActivityType =
     | FlightActivity
     | TransportationActivity
     | LodgingActivity
@@ -9,16 +9,16 @@ export type Activity =
 
 
 type BaseActivityType = {
-    id: number;
+    activity_id: number;
     trip_id: number;
     name: string;
     timestamp_start: Date;
     timestamp_end: Date;
-    type: ActivityType;
+    type: ActivityTypes;
 };
 
 type FlightActivity = BaseActivityType & {
-    type: ActivityType.FLIGHT;
+    type: ActivityTypes.FLIGHT;
     details: {
         flight_number: string;
         departure_airport: string;
@@ -30,7 +30,7 @@ type FlightActivity = BaseActivityType & {
 };
 
 type TransportationActivity = BaseActivityType & {
-    type: ActivityType.TRANSPORTATION;
+    type: ActivityTypes.TRANSPORTATION;
     details: {
         transport_type: string;
         departure_location: string;
@@ -42,7 +42,7 @@ type TransportationActivity = BaseActivityType & {
 };
 
 type LodgingActivity = BaseActivityType & {
-    type: ActivityType.LODGING;
+    type: ActivityTypes.LODGING;
     details: {
         lodging_name: string;
         check_in_time?: Date;
@@ -54,7 +54,7 @@ type LodgingActivity = BaseActivityType & {
 };
 
 type ReminderActivity = BaseActivityType & {
-    type: ActivityType.REMINDER;
+    type: ActivityTypes.REMINDER;
     details: {
         reminder_time: Date;
         note: string;
@@ -62,7 +62,7 @@ type ReminderActivity = BaseActivityType & {
 };
 
 type GeneralActivity = BaseActivityType & {
-    type: ActivityType.GENERAL;
+    type: ActivityTypes.GENERAL;
     details: {
         description?: string;
         location?: string;

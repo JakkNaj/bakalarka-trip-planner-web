@@ -1,42 +1,25 @@
-import { UserMetadataType } from "../types/user/UserMetadataType.ts";
-import { UserMetadataResponseType } from "../types/user/UserMetadaResponse.ts";
-import supabase from "../config/supabaseClient.ts";
-import { PostgrestError } from "@supabase/supabase-js";
+import { fetchUserData, signInWithGoogle, signOutUser } from '../utils/api.ts';
+import { UserMetadataType } from '../types/user/UserMetadataType.ts';
+import {UserMetadataResponseType} from "../types/user/UserMetadaResponse.ts";
 
 export const createUserSlice = (set) => ({
     user: null as UserMetadataType | null,
     setUser: (user: UserMetadataType) => set({ user }),
-    userNetworkError: null as PostgrestError | null,
-    setUserNetworkError: (error: PostgrestError | null) => set({ userNetworkError: error }),
+
     fetchUserData: async () => {
-        const { data, error } = await supabase.auth.getUser();
-        if (error) {
-            console.error('Error fetching user:', error.message);
-            set({ userNetworkError: error });
-            return;
-        }
-        if (data?.user?.user_metadata) {
-            set({ user: filterUserMetadata(data.user.user_metadata as UserMetadataResponseType), userFetchError: null });
+        const userMetadata = await fetchUserData();
+        if (userMetadata) {
+            set({ user: filterUserMetadata(userMetadata) });
         }
     },
+
     login: async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-        });
-        if (error) {
-            console.error('Error signing in with Google:', error.message);
-            set({ userNetworkError: error });
-            return;
-        }
+        await signInWithGoogle();
     },
+
     logout: async (navigate) => {
+        await signOutUser();
         set({ user: null });
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            console.error('Error signing out:', error.message);
-            set({ userNetworkError: error });
-            return;
-        }
         navigate('/');
     },
 });

@@ -1,41 +1,55 @@
-import {useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-import {useStore} from "../store/globalStore.ts";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../store/globalStore.ts";
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const HomePage = () => {
     const navigate = useNavigate();
     const {
         user,
-        logout,
+        logoutAndReset,
         trips,
         fetchTrips,
-        tripsNetworkError,
     } = useStore();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchTrips();
-    }, []);
+        const loadTrips = async () => {
+            try {
+                setLoading(true);
+                await fetchTrips();
+            } catch (e) {
+                console.error('Error fetching trips:', e.message);
+                setError('Failed to load trips. Please try again later.');
+            }
+        };
 
-
+        loadTrips().then(() => setLoading(false));
+    }, [fetchTrips]);
 
     const ShowTrips = () => {
-        if (trips.length === 0) {
-            return <h1>Loading...</h1>
+        if (loading) {
+            return <CircularProgress />;
         }
 
+        if (trips.length === 0) {
+            return
+        }
         return (
             <>
                 <h2>Your Trips</h2>
-                <ul>
-                    {trips.map((trip) => (
-                        <li key={trip.id}>
-                            <h3>{trip.name}</h3>
-                            <p>{trip.description}</p>
-                        </li>
-                    ))}
-                </ul>
+                {error && <p>{error}</p>}
+                {trips.map((trip) => (
+                    <div key={trip.id}>
+                        <h3>{trip.title}</h3>
+                        <p>{trip.description}</p>
+                        <p>{trip.date_start} - {trip.date_end}</p>
+                        <button onClick={() => {navigate(`/trip/${trip.id}`)}}>Show Plan</button>
+                    </div>
+                ))}
             </>
-        )
+        );
     }
 
     return (
@@ -44,9 +58,8 @@ export const HomePage = () => {
                 Hello world, success!!
             </h1>
             <pre>{JSON.stringify(user, null, 2)}</pre>
-            {tripsNetworkError && <p>{tripsNetworkError}</p>}
-            <ShowTrips/>
-            <button onClick={() => logout(navigate)}>Logout</button>
+            <ShowTrips />
+            <button style={{marginTop: "20px", backgroundColor: "lightslategrey"}} onClick={() => logoutAndReset(navigate)}>Logout</button>
         </>
-    )
+    );
 }

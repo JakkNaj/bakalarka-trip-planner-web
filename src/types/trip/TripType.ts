@@ -1,4 +1,4 @@
-import {Activity} from "../activities/ActivitiesTypes.ts";
+import {ActivityType} from "../activities/ActivitiesTypes.ts";
 
 export type TripType = {
     id: number;
@@ -7,5 +7,5 @@ export type TripType = {
     description?: string;
     date_start: Date;
     date_end: Date;
-    trip_activities: Activity[];
+    trip_activities: ActivityType[];
 };
