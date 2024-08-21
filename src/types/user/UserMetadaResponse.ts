@@ -1,6 +1,11 @@
-export type UserMetadataResponseType = {
-    email: string;
-    full_name: string;
-    avatar_url: string;
-    [key: string]: any; // This is a catch-all for any other metadata fields
+export type UserResponseType = {
+    user_id: string,
+    user_metadata: UserMetadataType
 };
+
+export type UserMetadataType = {
+    full_name: string,
+    email: string,
+    avatar_url: string,
+};
+

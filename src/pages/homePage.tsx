@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../store/globalStore.ts";
+import { useStore } from "../stores/globalStore.ts";
 import CircularProgress from '@mui/material/CircularProgress';
+import { NewTripForm } from "../components/NewTripForm.tsx";
 
 export const HomePage = () => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const HomePage = () => {
     } = useStore();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         const loadTrips = async () => {
@@ -34,11 +36,12 @@ export const HomePage = () => {
         }
 
         if (trips.length === 0) {
-            return
+            return;
         }
         return (
             <>
                 <h2>Your Trips</h2>
+                <button style={{marginTop: "20px", marginBottom: "20px", backgroundColor: "lightcoral"}} onClick={() => setShowForm(true)}>Add new Trip</button>
                 {error && <p>{error}</p>}
                 {trips.map((trip) => (
                     <div key={trip.id}>
@@ -58,6 +61,7 @@ export const HomePage = () => {
                 Hello world, success!!
             </h1>
             <pre>{JSON.stringify(user, null, 2)}</pre>
+            {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
             <ShowTrips />
             <button style={{marginTop: "20px", backgroundColor: "lightslategrey"}} onClick={() => logoutAndReset(navigate)}>Logout</button>
         </>

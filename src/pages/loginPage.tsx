@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import {useEffect, useState} from "react";
 import supabase from "../config/supabaseClient.ts";
-import { useStore } from "../store/globalStore.ts";
+import { useStore } from "../stores/globalStore.ts";
 
 export const LoginPage = () => {
     const navigate = useNavigate();

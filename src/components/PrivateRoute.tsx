@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useStore } from '../store/globalStore.ts';
+import { useStore } from '../stores/globalStore.ts';
 
 interface PrivateRouteProps {
     children: React.ReactNode;

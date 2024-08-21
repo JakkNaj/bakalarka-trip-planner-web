@@ -7,11 +7,9 @@ type ActivityProps = {
 
 export const Activity = ( props : ActivityProps ) => {
     const activity = props.activity;
-    console.log(activity);
     return (
         <div>
             <h2>Activity</h2>
-            <p>id: {activity.activity_id}</p>
             <p>name: {activity.name}</p>
             <p>timestamp_start: {activity.timestamp_start}</p>
             <p>timestamp_end: {activity.timestamp_end}</p>

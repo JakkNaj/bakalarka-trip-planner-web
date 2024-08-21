@@ -1,5 +1,6 @@
 import { TripType } from "../types/trip/TripType.ts";
-import {fetchTrips} from "../utils/api.ts";
+import {fetchTrips} from "../utils/trip_api.ts";
+import {ActivityType} from "../types/activities/ActivitiesTypes.ts";
 
 export const createTripSlice = (set, get) => ({
     trips: [] as TripType[],
@@ -28,5 +29,15 @@ export const createTripSlice = (set, get) => ({
 
     reset: () => {
         set({ trips: [] });
+    },
+
+    insertActivityInsideTrip: (activity: ActivityType, tripId: number) => {
+        set((state) => {
+            const trip = state.trips.find((trip) => trip.id === tripId);
+            if (trip) {
+                trip.trip_activities = [...trip.trip_activities, activity];
+            }
+            return { trips: [...state.trips] };
+        });
     },
 });
