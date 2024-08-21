@@ -12,35 +12,47 @@ export const HomePage = () => {
         trips,
         fetchTrips,
     } = useStore();
-    const [loading, setLoading] = useState(true);
+
+    // Separate state for background fetching indicator
+    const [isBackgroundLoading, setIsBackgroundLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
-        const loadTrips = async () => {
-            try {
-                setLoading(true);
-                await fetchTrips();
-            } catch (e) {
-                console.error('Error fetching trips:', e.message);
-                setError('Failed to load trips. Please try again later.');
-            }
-        };
+        if (!trips.length) {
+            fetchInitialTrips();
+        } else {
+            setIsBackgroundLoading(true);
+            fetchTrips()
+                .catch((e) => {
+                    console.error('Error fetching trips in background:', e.message);
+                    setError('Failed to update trips.');
+                })
+                .finally(() => setIsBackgroundLoading(false));
+        }
+    }, [fetchTrips, trips.length]);
 
-        loadTrips().then(() => setLoading(false));
-    }, [fetchTrips]);
+    const fetchInitialTrips = async () => {
+        try {
+            setIsBackgroundLoading(true);
+            await fetchTrips();
+        } catch (e) {
+            console.error('Error fetching trips:', e.message);
+            setError('Failed to load trips. Please try again later.');
+        } finally {
+            setIsBackgroundLoading(false);
+        }
+    };
 
     const ShowTrips = () => {
-        if (loading) {
-            return <CircularProgress />;
+        if (trips.length === 0 && !isBackgroundLoading) {
+            return <p>No trips found. Start by adding a new one!</p>;
         }
 
-        if (trips.length === 0) {
-            return;
-        }
         return (
             <>
                 <h2>Your Trips</h2>
+                {isBackgroundLoading && <CircularProgress />}
                 <button style={{marginTop: "20px", marginBottom: "20px", backgroundColor: "lightcoral"}} onClick={() => setShowForm(true)}>Add new Trip</button>
                 {error && <p>{error}</p>}
                 {trips.map((trip) => (
