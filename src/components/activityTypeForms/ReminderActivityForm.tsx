@@ -1,34 +1,28 @@
 import { useState } from 'react';
 
-export const ReminderActivityForm = ({ onClose, onSubmit }) => {
+export const ReminderActivityForm = ({ setDetails }) => {
     const [reminderTime, setReminderTime] = useState('');
     const [note, setNote] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit({
-            type: 'reminder',
-            details: {
-                reminder_time: new Date(reminderTime),
-                note,
-            },
+    const onEditField = (fieldSetter) => (e) => {
+        fieldSetter(e.target.value);
+        setDetails({
+            reminder_time: reminderTime,
+            note,
         });
-        onClose();
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <>
             <h2>Reminder Activity</h2>
             <label>
                 Reminder Time:
-                <input type="datetime-local" value={reminderTime} onChange={(e) => setReminderTime(e.target.value)} required />
+                <input type="datetime-local" value={reminderTime} onChange={onEditField(setReminderTime)} />
             </label>
             <label>
                 Note:
-                <input type="text" value={note} onChange={(e) => setNote(e.target.value)} required />
+                <input type="text" value={note} onChange={onEditField(setNote)} />
             </label>
-            <button type="submit">Add Activity</button>
-            <button type="button" onClick={onClose}>Cancel</button>
-        </form>
+        </>
     );
 };

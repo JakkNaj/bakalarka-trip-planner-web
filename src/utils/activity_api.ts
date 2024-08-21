@@ -19,7 +19,19 @@ export const insertActivity = async (activity: ActivityType) => {
 
     switch(activity.type) {
         case ActivityTypes.GENERAL:
-            await insertGeneralActivity({...typeDetails, activity_id: acitivity_id});
+            await insertDetailsActivity({...typeDetails, activity_id: acitivity_id}, 'general_activities');
+            break;
+        case ActivityTypes.FLIGHT:
+            await insertDetailsActivity({...typeDetails, activity_id: acitivity_id}, 'flights');
+            break;
+        case ActivityTypes.TRANSPORTATION:
+            await insertDetailsActivity({...typeDetails, activity_id: acitivity_id}, 'transportation');
+            break;
+        case ActivityTypes.LODGING:
+            await insertDetailsActivity({...typeDetails, activity_id: acitivity_id}, 'lodgings');
+            break;
+        case ActivityTypes.REMINDER:
+            await insertDetailsActivity({...typeDetails, activity_id: acitivity_id}, 'reminders');
             break;
         default:
             throw new Error('Invalid activity type.');
@@ -28,9 +40,9 @@ export const insertActivity = async (activity: ActivityType) => {
     return {...activityData, activity_details: typeDetails};
 }
 
-const insertGeneralActivity = async (details: never) => {
+const insertDetailsActivity = async (details: never, tableName: string) => {
     const { error } = await supabase
-        .from('general_activities')
+        .from(tableName)
         .insert([details])
 
     if (error) {

@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import {ActivityTypes} from '../types/activities/BaseActivityTypes.ts';
 import {GeneralActivityForm} from "./activityTypeForms/GeneralActivityForm.tsx";
+import {FlightActivityForm} from "./activityTypeForms/FlightActivityForm.tsx";
+import {ReminderActivityForm} from "./activityTypeForms/ReminderActivityForm.tsx";
+import {LodgingActivityForm} from "./activityTypeForms/LodgingActivityForm.tsx";
+import {TransportationActivityForm} from "./activityTypeForms/TransportationActivityForm.tsx";
 
 export const NewActivityForm = ({onClose, onSubmit, tripId}) => {
     const [baseActivityDetails, setBaseActivityDetails] = useState({
@@ -41,33 +45,18 @@ export const NewActivityForm = ({onClose, onSubmit, tripId}) => {
     const renderActivityTypeForm = () => {
         switch (baseActivityDetails.type) {
             case ActivityTypes.FLIGHT:
-                return(
-                    <>
-                        <h1>Flight form</h1>
-                    </>
-                );
+                return <FlightActivityForm setDetails={setTypeDetails} />;
             case ActivityTypes.TRANSPORTATION:
-                return(
-                    <>
-                        <h1>Transportation form</h1>
-                    </>
-                );
+                return <TransportationActivityForm setDetails={setTypeDetails} />;
             case ActivityTypes.LODGING:
-                return(
-                    <>
-                        <h1>Lodging form</h1>
-                    </>
-                );
+                return <LodgingActivityForm setDetails={setTypeDetails} />;
             case ActivityTypes.REMINDER:
-                return(
-                    <>
-                        <h1>Reminder form</h1>
-                    </>
-                );
+                return <ReminderActivityForm setDetails={setTypeDetails} />;
+            case ActivityTypes.GENERAL:
+                return <GeneralActivityForm setDetails={setTypeDetails} />;
             default:
-                return (
-                    <GeneralActivityForm  setDetails={setTypeDetails}/>
-                )
+                console.error('Invalid activity type');
+                return null;
         }
     }
 

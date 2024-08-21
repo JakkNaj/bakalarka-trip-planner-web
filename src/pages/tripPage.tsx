@@ -24,15 +24,13 @@ export const TripPage = () => {
     const handleAddActivity = async (newActivity) => {
         // todo add loading state
         //insert into db
-        console.log("inserting into db ", newActivity);
-        const insertedActivity  = await insertActivity(newActivity);
-        console.log("updating store with ", insertedActivity);
+        const insertedActivity= await insertActivity(newActivity);
         //update store
         insertActivityInsideTrip(insertedActivity as ActivityType, trip.id);
     };
 
     const ShowActivities = () => {
-        if (trip.trip_activities.length === 0) {
+        if (!trip.trip_activities || trip.trip_activities.length === 0) {
             return <p>No activities planned yet.</p>;
         }
         return trip.trip_activities.map((activity) => (
