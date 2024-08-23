@@ -2,30 +2,16 @@ import { useNavigate } from "react-router-dom";
 import {useEffect, useState} from "react";
 import supabase from "../config/supabaseClient.ts";
 import { useStore } from "../stores/globalStore.ts";
+import {checkUserSession} from "../utils/user_api.ts";
 
 export const LoginPage = () => {
     const navigate = useNavigate();
-    const { login, fetchUserData} = useStore();
+    const { login, fetchUserData } = useStore();
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-                if (sessionError) throw sessionError;
 
-                if (session) {
-                    console.log('User session found!');
-                    await fetchUserData();
-                    navigate('/home');
-                }
-            } catch (e) {
-                setError('Failed to check session. Please try again.');
-                console.error('Error checking session:', e.message);
-            }
-        };
-
-        checkSession();
+        checkUserSession(navigate);
 
         const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
             if (event === 'SIGNED_IN') {
@@ -33,7 +19,7 @@ export const LoginPage = () => {
                     try {
                         console.log('User signed in!');
                         await fetchUserData();
-                        navigate('/home');
+                        navigate('/');
                     } catch (e) {
                         setError('Failed to fetch user data after sign-in.');
                         console.error('Error fetching user data:', e.message);
@@ -45,7 +31,7 @@ export const LoginPage = () => {
         return () => {
             authListener.subscription.unsubscribe();
         };
-    }, [navigate, fetchUserData]);
+    }, [navigate, fetchUserData, checkUserSession]);
 
     const handleLogin = async () => {
         try {

@@ -34,3 +34,20 @@ export const signOutUser = async (): Promise<void> => {
     }
 };
 
+export const checkUserSession = async (navigate): Promise<UserResponseType | null> => {
+    try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+
+        if (session) {
+            console.log('User session found!');
+            await fetchUserData();
+        } else {
+            navigate('/login');
+        }
+    } catch (e) {
+        console.error('Error checking session:', e.message);
+        navigate('/login');
+    }
+}
+

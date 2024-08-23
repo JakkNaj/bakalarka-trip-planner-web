@@ -1,15 +1,47 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import {fonts} from "../assets/fonts.ts";
-import {colors} from "../assets/colors.ts";
-import {Avatar as MuiAvatar} from "@mui/material";
-import {KeyboardArrowDown} from "@mui/icons-material";
-import {useStore} from "../stores/globalStore.ts";
+import { fonts } from "../assets/fonts.ts";
+import { colors } from "../assets/colors.ts";
+import { Avatar as MuiAvatar, Menu, MenuItem, CircularProgress } from "@mui/material";
+import { KeyboardArrowDown } from "@mui/icons-material";
+import { useStore } from "../stores/globalStore.ts";
 import logoIpsum from "../assets/logoIpsum.svg";
+import { useEffect, useState } from "react";
+import { OrderByTypes } from "../types/orderByTypes.ts";
 
 export const LayoutComponent = () => {
-    const { user } = useStore();
+    const navigate = useNavigate();
+    const { user, fetchUserData, logoutAndReset, setOrderTripsBy, orderTripsBy } = useStore();
     const avatarUrl = user?.avatar_url;
+    const firstName = user?.full_name?.split(' ')[0];
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const isAuthenticated = await fetchUserData();
+            if (!isAuthenticated) {
+                navigate('/login');
+            } else {
+                setIsLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, [fetchUserData, navigate]);
+
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleLogout = () => {
+        logoutAndReset(navigate);
+        setAnchorEl(null);
+    };
+
+    if (isLoading) {
+        return <CircularProgress />;
+    }
 
     return (
         <>
@@ -17,22 +49,43 @@ export const LayoutComponent = () => {
                 <Styled.LogoLink to="/home">
                     <Styled.Logo src={logoIpsum} alt="Logo" />
                 </Styled.LogoLink>
-                <p>
-                    <Styled.NavLink to="/" className="active">upcoming trips</Styled.NavLink>
+                <div>
+                    <Styled.NavLink
+                        to="/"
+                        onClick={() => setOrderTripsBy(OrderByTypes.UPCOMING)}
+                        className={orderTripsBy === OrderByTypes.UPCOMING ? "active" : ""}
+                    >
+                        upcoming trips
+                    </Styled.NavLink>
                     <Styled.Separator>|</Styled.Separator>
-                    <Styled.NavLink to="/">previous trips</Styled.NavLink>
-                </p>
-                <Styled.Profile>
+                    <Styled.NavLink
+                        to="/"
+                        onClick={() => setOrderTripsBy(OrderByTypes.PAST)}
+                        className={orderTripsBy === OrderByTypes.PAST ? "active" : ""}
+                    >
+                        previous trips
+                    </Styled.NavLink>
+                </div>
+                <Styled.Profile onClick={handleClick}>
                     <Styled.ArrowDown />
                     <MuiAvatar src={avatarUrl} alt="User Avatar" />
+                    <Styled.ProfileName>{firstName}</Styled.ProfileName>
                 </Styled.Profile>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}
+                >
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
             </Styled.Nav>
             <main>
-                <Outlet/>
+                <Outlet />
             </main>
         </>
     );
-}
+};
+
 
 const Styled = {
     Nav: styled.nav({
@@ -65,16 +118,20 @@ const Styled = {
     }),
     Logo: styled.img({
         height: "20px",
-        marginRight: "1rem",
     }),
     Profile: styled.div({
         display: "flex",
         alignItems: "center",
         cursor: "pointer",
+        position: "relative",
+    }),
+    ProfileName: styled.span({
+        marginLeft: "0.4rem",
+        fontFamily: fonts.normal,
+        color: colors.mainBlue,
     }),
     ArrowDown: styled(KeyboardArrowDown)({
         padding: "0.2rem",
         color: colors.mainBlue,
     }),
-}
-
+};

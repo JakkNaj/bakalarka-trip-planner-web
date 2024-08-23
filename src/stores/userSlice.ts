@@ -9,7 +9,9 @@ export const createUserSlice = (set) => ({
         const userMetadata = await fetchUserData();
         if (userMetadata) {
             set({ user: filterUserMetadata(userMetadata) });
+            return true;  // Return true if user is fetched successfully
         }
+        return false;  // Return false if no user data
     },
 
     login: async () => {
@@ -19,7 +21,7 @@ export const createUserSlice = (set) => ({
     logout: async (navigate) => {
         await signOutUser();
         set({ user: null });
-        navigate('/');
+        navigate('/login');
     },
 });
 
@@ -31,3 +33,4 @@ const filterUserMetadata = (metadata: UserResponseType): UserType => {
         avatar_url: metadata.user_metadata.avatar_url,
     };
 };
+

@@ -1,10 +1,14 @@
 import { TripType } from "../types/trip/TripType.ts";
 import {fetchTrips} from "../utils/trip_api.ts";
 import {ActivityType} from "../types/activities/ActivitiesTypes.ts";
+import {OrderByTypes} from "../types/orderByTypes.ts";
 
 export const createTripSlice = (set, get) => ({
     trips: [] as TripType[],
     setTrips: (trips: TripType[]) => set({ trips }),
+
+    orderTripsBy: OrderByTypes.UPCOMING,
+    setOrderTripsBy: (orderBy: OrderByTypes) => set({ orderTripsBy: orderBy }),
 
     fetchTrips: async () => {
         const trips = await fetchTrips();
