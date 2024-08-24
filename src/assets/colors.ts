@@ -4,5 +4,6 @@ export const colors = {
     headerGrey: "#e3e0db",
     headingText: "#2b2b2e",
     normalText: "#535355",
+    white: "ghostwhite",
 }
 

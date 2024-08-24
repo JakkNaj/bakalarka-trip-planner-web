@@ -7,5 +7,7 @@ export type TripType = {
     description?: string;
     date_start: Date;
     date_end: Date;
+    location: string;
+    imageUrl?: string;
     trip_activities: ActivityType[];
 };

@@ -1,5 +1,5 @@
 import { TripType } from "../types/trip/TripType.ts";
-import {fetchTrips} from "../utils/trip_api.ts";
+import {fetchTripImageUrl, fetchTrips} from "../utils/trip_api.ts";
 import {ActivityType} from "../types/activities/ActivitiesTypes.ts";
 import {OrderByTypes} from "../types/orderByTypes.ts";
 
@@ -10,9 +10,16 @@ export const createTripSlice = (set, get) => ({
     orderTripsBy: OrderByTypes.UPCOMING,
     setOrderTripsBy: (orderBy: OrderByTypes) => set({ orderTripsBy: orderBy }),
 
-    fetchTrips: async () => {
+    fetchTrips: async (userId) => {
         const trips = await fetchTrips();
-        if (trips) {
+        if (trips && userId) {
+            trips.map(async (trip) => {
+                const imageUrl = await fetchTripImageUrl(trip.id, userId);
+                if (imageUrl) {
+                    console.log("image url", imageUrl);
+                    trip.imageUrl = imageUrl;
+                }
+            });
             set({ trips });
         }
     },
@@ -43,5 +50,23 @@ export const createTripSlice = (set, get) => ({
             }
             return { trips: [...state.trips] };
         });
+    },
+
+    setTripImage( tripId: number, url: string) {
+        set((state) => {
+            const trip = state.trips.find((trip) => trip.id === tripId);
+            if (trip) {
+                trip.imageUrl = url;
+            }
+            return { trips: [...state.trips] };
+        })
+    },
+
+    getTripImage(tripId: number) {
+        const trip = get().trips.find((trip) => trip.id === tripId);
+        if (trip) {
+            return trip.imageUrl;
+        }
+        return undefined;
     },
 });

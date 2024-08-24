@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../stores/globalStore.ts";
 import CircularProgress from '@mui/material/CircularProgress';
-import styled from "styled-components";
-import { fonts } from "../assets/fonts.ts";
 import { OrderByTypes } from "../types/orderByTypes.ts";
+import styled from "styled-components";
+import {fonts} from "../assets/fonts.ts";
+import {TripCard} from "./TripCard.tsx";
 
-export const TripsDisplay = ({setShowForm}) => {
+export const TripsDisplay = () => {
     const navigate = useNavigate();
-    const { trips, fetchTrips, orderTripsBy } = useStore();
+    const { user ,trips, fetchTrips, orderTripsBy } = useStore();
 
     const [isBackgroundLoading, setIsBackgroundLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -18,19 +19,21 @@ export const TripsDisplay = ({setShowForm}) => {
             fetchInitialTrips();
         } else {
             setIsBackgroundLoading(true);
-            fetchTrips()
+            fetchTrips(user?.id)
                 .catch((e) => {
                     console.error('Error fetching trips in background:', e.message);
                     setError('Failed to update trips.');
                 })
-                .finally(() => setIsBackgroundLoading(false));
+                .finally(() => {
+                    setIsBackgroundLoading(false)
+                });
         }
     }, [fetchTrips, trips.length]);
 
     const fetchInitialTrips = async () => {
         try {
             setIsBackgroundLoading(true);
-            await fetchTrips();
+            await fetchTrips(user?.id);
         } catch (e) {
             console.error('Error fetching trips:', e.message);
             setError('Failed to load trips. Please try again later.');
@@ -48,26 +51,32 @@ export const TripsDisplay = ({setShowForm}) => {
         return true;
     });
 
+    const displayTrips = () => {
+        if (filteredTrips?.length === 0) {
+            return <Styled.Text>Plan new trips to see them here!</Styled.Text>;
+        }
+        return filteredTrips.map((trip) => (
+            <TripCard
+                key={trip.id}
+                trip={trip}
+                onShowDetails={() => {navigate(`/trip/${trip.id}`)}}
+                onEditTrip={() => {console.log("todo edit trip")}}
+            />
+        ));
+    }
+
     return (
         <>
-            {orderTripsBy && orderTripsBy === OrderByTypes.UPCOMING ? <Styled.H1>Your Upcoming Trips</Styled.H1> : <Styled.H1>Your Past Trips</Styled.H1>}
             {isBackgroundLoading && <CircularProgress />}
-            <button style={{marginTop: "20px", marginBottom: "20px", backgroundColor: "lightcoral"}} onClick={() => setShowForm(true)}>Add new Trip</button>
             {error && <p>{error}</p>}
-            {filteredTrips.map((trip) => (
-                <div key={trip.id}>
-                    <h3>{trip.title}</h3>
-                    <p>{trip.description}</p>
-                    <p>{trip.date_start} - {trip.date_end}</p>
-                    <button onClick={() => {navigate(`/trip/${trip.id}`)}}>Show Plan</button>
-                </div>
-            ))}
+            {displayTrips()}
         </>
     );
 }
 
 const Styled = {
-    H1: styled.h1({
-        fontFamily: fonts.heading,
+    Text: styled.p({
+        fontFamily: fonts.normal,
     })
 }
+
