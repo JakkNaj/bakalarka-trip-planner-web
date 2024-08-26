@@ -5,5 +5,7 @@ export const colors = {
     headingText: "#2b2b2e",
     normalText: "#535355",
     white: "ghostwhite",
+    silver: "#dcdcdc",
+    darkGrey: "#a9a9a9",
 }
 

@@ -27,7 +27,7 @@ export const HeaderComponent = () => {
 
     return (
             <Styled.Nav>
-                <Styled.LogoLink to="/home">
+                <Styled.LogoLink to="/">
                     <Styled.Logo src={logoIpsum} alt="Logo" />
                 </Styled.LogoLink>
                 <div>

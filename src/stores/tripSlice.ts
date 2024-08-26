@@ -16,7 +16,6 @@ export const createTripSlice = (set, get) => ({
             trips.map(async (trip) => {
                 const imageUrl = await fetchTripImageUrl(trip.id, userId);
                 if (imageUrl) {
-                    console.log("image url", imageUrl);
                     trip.imageUrl = imageUrl;
                 }
             });

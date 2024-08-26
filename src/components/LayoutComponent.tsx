@@ -44,9 +44,10 @@ const Styled = {
     PageContainer: styled.div({
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: colors.backgroundGrey,
+        minHeight: "100vh",
     }),
     HeaderContainer: styled.div({
         backgroundColor: colors.headerGrey,
@@ -57,9 +58,8 @@ const Styled = {
     MainContainer: styled.div({
         display: "flex",
         flexDirection: "column",
-        minHeight: "100vh",
+        minHeight: "100%",
         width: "100%",
-        padding: "0 2rem",
         maxWidth: "120rem",
     }),
 };

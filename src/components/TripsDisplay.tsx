@@ -60,23 +60,28 @@ export const TripsDisplay = () => {
                 key={trip.id}
                 trip={trip}
                 onShowDetails={() => {navigate(`/trip/${trip.id}`)}}
-                onEditTrip={() => {console.log("todo edit trip")}}
             />
         ));
     }
 
     return (
-        <>
+        <Styled.TripsContainer>
             {isBackgroundLoading && <CircularProgress />}
             {error && <p>{error}</p>}
             {displayTrips()}
-        </>
+        </Styled.TripsContainer>
     );
 }
 
 const Styled = {
     Text: styled.p({
         fontFamily: fonts.normal,
-    })
+    }),
+    TripsContainer: styled.div({
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+    }),
 }
 

@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { LoginPage } from './pages/loginPage.tsx';
 import { HomePage } from './pages/homePage.tsx';
-import { TripPage } from './pages/tripPage.tsx';
+import { TripPage } from './pages/tripPage/tripPage.tsx';
 import { EditActivityPage } from './pages/editActivityPage.tsx';
 import { PrivateRoute } from './components/PrivateRoute.tsx';
 import { LayoutComponent } from './components/LayoutComponent.tsx';

@@ -41,7 +41,6 @@ export const fetchTripImageUrl = async (tripId: number, userId: string | undefin
                 search: 'trip-image.jpg'
             });
 
-        console.log("Files", files);
         if (listError) {
             console.error("Error listing files", listError.message);
             return null;
@@ -68,6 +67,50 @@ export const fetchTripImageUrl = async (tripId: number, userId: string | undefin
         return null;
     }
 };
+
+export const uploadTripImage = async (tripId: number, userId: string | undefined, file: File) => {
+    const filePath = `${userId}/${tripId}/trip-image.jpg`;
+
+    // list existing images in the trip folder
+    const { data: existingImages, error: listError } = await supabase
+        .storage
+        .from('trip_images')
+        .list(`${userId}/${tripId}`);
+
+    if (listError) {
+        throw new Error(`Error listing images: ${listError.message}`);
+    }
+
+    // delete existing images
+    if (existingImages) {
+        for (const image of existingImages) {
+            const { error: deleteError } = await supabase
+                .storage
+                .from('trip_images')
+                .remove([`${userId}/${tripId}/${image.name}`]);
+
+            if (deleteError) {
+                console.error(`Error deleting image: ${deleteError.message}`);
+            }
+        }
+    }
+
+    // upload new image
+    const { error: uploadError } = await supabase
+        .storage
+        .from('trip_images')
+        .upload(filePath, file);
+
+    if (uploadError) {
+        throw new Error(`Error uploading image: ${uploadError.message}`);
+    }
+
+    const url = await fetchTripImageUrl(tripId, userId);
+    if (url) {
+        return url;
+    }
+     return null;
+}
 
 export const insertTrip = async (trip: TripInsertType) => {
     const { data, error } = await supabase

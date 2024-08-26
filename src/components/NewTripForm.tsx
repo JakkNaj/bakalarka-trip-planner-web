@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import {insertTrip} from "../utils/trip_api.ts";
-import {useStore} from "../stores/globalStore.ts";
+import { insertTrip } from "../utils/trip_api.ts";
+import { useStore } from "../stores/globalStore.ts";
+import styled from "styled-components";
+import { FormControl, TextField, Button, Typography } from '@mui/material';
+import {fonts} from "../assets/fonts.ts";
+import {colors} from "../assets/colors.ts";
 
 export const NewTripForm = ({ onClose }) => {
-    const { user, addTrip } = useStore( );
+    const { user, addTrip } = useStore();
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [dateStart, setDateStart] = useState<string>(new Date().toISOString().slice(0, 10));
@@ -11,13 +15,12 @@ export const NewTripForm = ({ onClose }) => {
     const [error, setError] = useState<string | null>(null);
 
     if (!user) {
-        return <p>Please log in to create a new trip.</p>;
+        return <Typography>Please log in to create a new trip.</Typography>;
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-
             const newTrip = {
                 title,
                 description,
@@ -29,7 +32,6 @@ export const NewTripForm = ({ onClose }) => {
             const insertedTrip = await insertTrip(newTrip);
             console.log('Trip created:', insertedTrip);
             addTrip(insertedTrip);
-
         } catch (e) {
             console.error('Error creating trip:', e.message);
             setError('Failed to create trip. Please try again later.');
@@ -39,27 +41,100 @@ export const NewTripForm = ({ onClose }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Create New Trip</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <label>
-                Title:
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            </label>
-            <label>
-                Description:
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required />
-            </label>
-            <label>
-                Start Date:
-                <input type="date" value={dateStart} onChange={(e) => setDateStart(e.target.value)} required />
-            </label>
-            <label>
-                End Date:
-                <input type="date" value={dateEnd} onChange={(e) => setDateEnd(e.target.value)} required />
-            </label>
-            <button type="submit">Create Trip</button>
-            <button type="button" onClick={onClose}>Cancel</button>
-        </form>
+        <Styled.Form onSubmit={handleSubmit}>
+            {error && <Typography color="error">{error}</Typography>}
+            <div>
+                <FormControl fullWidth margin="none">
+                    <Styled.TextField
+                        label="Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                    />
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <Styled.TextField
+                        label="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                    />
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <Styled.TextField
+                        label="Start Date"
+                        type="date"
+                        value={dateStart}
+                        onChange={(e) => setDateStart(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        required
+                    />
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <Styled.TextField
+                        label="End Date"
+                        type="date"
+                        value={dateEnd}
+                        onChange={(e) => setDateEnd(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        required
+                    />
+                </FormControl>
+                <Button type="submit" variant="contained" color="primary">Create Trip</Button>
+                <Button type="button" onClick={onClose} variant="outlined" color="secondary">Close</Button>
+            </div>
+        </Styled.Form>
     );
+};
+
+const Styled = {
+    Form: styled.form({
+        marginLeft: "2rem",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+        gap: "1rem",
+        padding: "1rem",
+        width: "40%",
+    }),
+    TextField: styled(TextField)({
+        '& .MuiInputBase-root': {
+            fontFamily: fonts.normal,
+            borderRadius: '0.4rem',
+        },
+        '& .MuiInputLabel-root': {
+            fontFamily: fonts.normal,
+        },
+        '& .MuiOutlinedInput-root': {
+            borderRadius: '0.4rem',
+        },
+    }),
+    AddTripButton: styled(Button)({
+        border: "none",
+        fontSize: "1rem",
+        textAlign: "center",
+        display: "flex",
+        alignItems: "center",
+        position: "relative",
+        color: colors.headingText,
+        textTransform: "lowercase",
+        fontFamily: fonts.normal,
+        transition: "background-color 0.4s, color 0.4s",
+        padding: "0.2rem 0.4rem",
+        "&::after": {
+            content: '""',
+            position: "absolute",
+            bottom: 0,
+            right: "4%",
+            width: "48%",
+            borderBottom: `0.125rem solid ${colors.mainBlue}`,
+        },
+        "&:hover": {
+            backgroundColor: colors.mainBlue,
+            color: colors.white,
+            "& .white-backspace": {
+                color: colors.white,
+            },
+        },
+    }),
 };

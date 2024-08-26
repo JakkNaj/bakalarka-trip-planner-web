@@ -14,7 +14,7 @@ export const HomePage = () => {
     const { orderTripsBy } = useStore();
 
     return (
-        <div style={{ padding: "0 4rem"}}>
+        <Styled.PageContainer>
             <Styled.HeadingContainer>
                 {orderTripsBy && orderTripsBy === OrderByTypes.UPCOMING ?
                     <Styled.H1>Your Upcoming Trips</Styled.H1> :
@@ -25,23 +25,33 @@ export const HomePage = () => {
                     Add new Trip
                 </Styled.AddTripButton>
             </Styled.HeadingContainer>
-
-            {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
-            <TripsDisplay />
-        </div>
+            <Styled.ContentContainer>
+                {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
+                <TripsDisplay />
+            </Styled.ContentContainer>
+        </Styled.PageContainer>
     );
 }
 
 const Styled = {
+    PageContainer: styled.div({
+       padding: "0 4rem",
+    }),
     H1: styled.h1({
         fontFamily: fonts.heading,
         color: colors.mainBlue,
+        margin: 0,
     }),
     HeadingContainer: styled.div({
         display: "flex",
         justifyContent: "flex-start",
         alignItems: "center",
         gap: "4rem",
+        margin: "2rem 0 1.4rem 0",
+    }),
+    ContentContainer: styled.div({
+        display: "flex",
+        gap: "1rem",
     }),
     AddTripButton: styled(Button)({
         border: "none",
@@ -54,6 +64,7 @@ const Styled = {
         textTransform: "lowercase",
         fontFamily: fonts.normal,
         transition: "background-color 0.4s, color 0.4s",
+        padding: "0.2rem 0.4rem",
         "&::after": {
             content: '""',
             position: "absolute",
