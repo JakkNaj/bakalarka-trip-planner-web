@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../stores/globalStore.ts";
-import CircularProgress from '@mui/material/CircularProgress';
 import { OrderByTypes } from "../types/orderByTypes.ts";
 import styled from "styled-components";
 import {fonts} from "../assets/fonts.ts";
 import {TripCard} from "./TripCard.tsx";
 
-export const TripsDisplay = () => {
-    const navigate = useNavigate();
-    const { user ,trips, fetchTrips, orderTripsBy } = useStore();
+interface TripsDisplayProps {
+    setIsBackgroundLoading: (loading: boolean) => void;
+}
 
-    const [isBackgroundLoading, setIsBackgroundLoading] = useState(false);
+export const TripsDisplay = ({setIsBackgroundLoading}: TripsDisplayProps) => {
+    const navigate = useNavigate();
+    const { user, trips, fetchTrips, orderTripsBy } = useStore();
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -64,9 +65,9 @@ export const TripsDisplay = () => {
         ));
     }
 
+
     return (
         <Styled.TripsContainer>
-            {isBackgroundLoading && <CircularProgress />}
             {error && <p>{error}</p>}
             {displayTrips()}
         </Styled.TripsContainer>

@@ -13,7 +13,7 @@ type TripCardProps = {
 };
 
 export const TripCard = ({ trip, onShowDetails } : TripCardProps) => {
-    const { user, getTripImage } = useStore();
+    const { user  } = useStore();
 
     if (!user) {
         return null;
@@ -37,7 +37,7 @@ export const TripCard = ({ trip, onShowDetails } : TripCardProps) => {
                     </Styled.Button>
                 </div>
             </div>
-            <TripImage imageUrl={getTripImage(trip.id)} tripId={trip.id}/>
+            <TripImage imageUrl={trip.imageUrl} tripId={trip.id}/>
         </Styled.Card>
     );
 };

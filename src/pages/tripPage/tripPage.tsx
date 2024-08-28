@@ -11,6 +11,7 @@ import {fonts} from "../../assets/fonts.ts";
 import {Box, Button} from "@mui/material";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import {TripPageHeader} from "./TripPageHeader.tsx";
+import {VerticalStepper} from "../../components/VerticalStepper.tsx";
 
 
 export const TripPage = () => {
@@ -83,7 +84,11 @@ export const TripPage = () => {
                     onSubmit={handleAddActivity}
                 />
             )}
-            <ShowActivities />
+            {trip.trip_activities && trip.trip_activities.length > 0 ? (
+                <VerticalStepper activities={trip.trip_activities} />
+            ) : (
+                <p>No activities planned yet.</p>
+            )}
         </Styled.PageContainer>
     );
 };

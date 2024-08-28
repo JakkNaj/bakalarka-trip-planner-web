@@ -13,13 +13,14 @@ export const createTripSlice = (set, get) => ({
     fetchTrips: async (userId) => {
         const trips = await fetchTrips();
         if (trips && userId) {
-            trips.map(async (trip) => {
+            const updatedTrips = await Promise.all(trips.map(async (trip) => {
                 const imageUrl = await fetchTripImageUrl(trip.id, userId);
                 if (imageUrl) {
                     trip.imageUrl = imageUrl;
                 }
-            });
-            set({ trips });
+                return trip;
+            }));
+            set({ trips: updatedTrips });
         }
     },
 
@@ -61,11 +62,4 @@ export const createTripSlice = (set, get) => ({
         })
     },
 
-    getTripImage(tripId: number) {
-        const trip = get().trips.find((trip) => trip.id === tripId);
-        if (trip) {
-            return trip.imageUrl;
-        }
-        return undefined;
-    },
 });

@@ -7,11 +7,12 @@ import styled from "styled-components";
 import { fonts } from "../assets/fonts.ts";
 import { colors } from "../assets/colors.ts";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import {Button} from "@mui/material";
+import {Button, CircularProgress} from "@mui/material";
 
 export const HomePage = () => {
     const [showForm, setShowForm] = useState(false);
     const { orderTripsBy } = useStore();
+    const [isBackgroundLoading, setIsBackgroundLoading] = useState(false);
 
     return (
         <Styled.PageContainer>
@@ -24,10 +25,11 @@ export const HomePage = () => {
                     <Styled.KeyboardBackspaceIcon className="white-backspace" />
                     Add new Trip
                 </Styled.AddTripButton>
+                {isBackgroundLoading && <CircularProgress style={{ color: colors.mainBlue }} size={32} />}
             </Styled.HeadingContainer>
             <Styled.ContentContainer>
                 {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
-                <TripsDisplay />
+                <TripsDisplay setIsBackgroundLoading={setIsBackgroundLoading}/>
             </Styled.ContentContainer>
         </Styled.PageContainer>
     );
@@ -52,6 +54,7 @@ const Styled = {
     ContentContainer: styled.div({
         display: "flex",
         gap: "1rem",
+        marginTop: "1rem",
     }),
     AddTripButton: styled(Button)({
         border: "none",
