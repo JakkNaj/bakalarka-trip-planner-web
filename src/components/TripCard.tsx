@@ -29,7 +29,7 @@ export const TripCard = ({ trip, onShowDetails } : TripCardProps) => {
                     <Styled.Title>{trip.title}</Styled.Title>
                 </Styled.Header>
                 <Styled.Location>{trip.location}</Styled.Location>
-                <Styled.Dates>{trip.date_start} - {trip.date_end}</Styled.Dates>
+                <Styled.Dates>{trip.date_start.toLocaleString()} - {trip.date_end.toLocaleString()}</Styled.Dates>
                 <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
                     <Styled.Button onClick={(e) => { e.stopPropagation(); onShowDetails(trip.id); }}>
                         Show Trip Details

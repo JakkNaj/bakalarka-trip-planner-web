@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { GeneralType } from '../../types/activities/ActivitiesTypes';
 
-export const GeneralActivityForm = ({ setDetails }) => {
+type GeneralActivityFormProps = {
+    setDetails: (details: GeneralType) => void;
+};
+
+export const GeneralActivityForm = ({ setDetails } : GeneralActivityFormProps) => {
     const [description, setDescription] = useState('');
     const [location, setLocation] = useState('');
 
-    const onEditLocation = (e) => {
+    const onEditLocation = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLocation(e.target.value);
         setDetails({
             description,
-            location,
+            location: e.target.value,
         });
     }
 
-    const onEditDescription = (e) => {
+    const onEditDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDescription(e.target.value);
         setDetails({
             description,

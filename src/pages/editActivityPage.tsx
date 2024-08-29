@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 
 export const EditActivityPage = () => {
-    const { activityId } : number = useParams();
+    const { activityId }= useParams();
 
     return (
         <div>

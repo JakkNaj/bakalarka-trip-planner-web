@@ -29,8 +29,8 @@ export const ImageUploadButton = ({ tripId }: ImageUploadButtonProps) => {
             if (url) {
                 setTripImage(tripId, url);
             }
-        } catch (e) {
-            setError(e.message);
+        } catch (e: unknown) {
+            setError((e as Error).message);
         } finally {
             setUploading(false);
         }

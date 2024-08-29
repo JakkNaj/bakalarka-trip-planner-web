@@ -22,7 +22,8 @@ export const LoginPage = () => {
                         navigate('/');
                     } catch (e) {
                         setError('Failed to fetch user data after sign-in.');
-                        console.error('Error fetching user data:', e.message);
+                        const error = e as Error;
+                        console.error('Error fetching user data:', error.message);
                     }
                 })();
             }
@@ -31,14 +32,15 @@ export const LoginPage = () => {
         return () => {
             authListener.subscription.unsubscribe();
         };
-    }, [navigate, fetchUserData, checkUserSession]);
+    }, [navigate, fetchUserData]);
 
     const handleLogin = async () => {
         try {
             await login();
         } catch (e) {
             setError('Failed to sign in with Google.');
-            console.error('Error during login:', e.message);
+            const error = e as Error;
+            console.error('Error during login:', error.message);
         }
     };
 

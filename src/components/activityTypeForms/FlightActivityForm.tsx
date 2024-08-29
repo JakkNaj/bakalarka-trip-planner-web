@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { FlightType } from '../../types/activities/ActivitiesTypes';
 
-export const FlightActivityForm = ({ setDetails }) => {
+type FlightActivityProps = {
+    setDetails: (details: FlightType) => void;
+};
+
+export const FlightActivityForm = ({ setDetails }: FlightActivityProps) => {
     const [flightNumber, setFlightNumber] = useState('');
     const [departureAirport, setDepartureAirport] = useState('');
     const [arrivalAirport, setArrivalAirport] = useState('');
@@ -8,14 +13,13 @@ export const FlightActivityForm = ({ setDetails }) => {
     const [arrivalTime, setArrivalTime] = useState('');
     const [airline, setAirline] = useState('');
 
-    const onEditField = (fieldSetter) => (e) => {
-        fieldSetter(e.target.value);
+    const updateDetails = () => {
         setDetails({
             flight_number: flightNumber,
             departure_airport: departureAirport,
             arrival_airport: arrivalAirport,
-            departure_time: departureTime,
-            arrival_time: arrivalTime,
+            departure_time: new Date(departureTime),
+            arrival_time: new Date(arrivalTime),
             airline,
         });
     };
@@ -25,27 +29,69 @@ export const FlightActivityForm = ({ setDetails }) => {
             <h2>Flight Activity</h2>
             <label>
                 Flight Number:
-                <input type="text" value={flightNumber} onChange={onEditField(setFlightNumber)} />
+                <input
+                    type="text"
+                    value={flightNumber}
+                    onChange={(e) => {
+                        setFlightNumber(e.target.value);
+                        updateDetails();
+                    }}
+                />
             </label>
             <label>
                 Departure Airport:
-                <input type="text" value={departureAirport} onChange={onEditField(setDepartureAirport)} />
+                <input
+                    type="text"
+                    value={departureAirport}
+                    onChange={(e) => {
+                        setDepartureAirport(e.target.value);
+                        updateDetails();
+                    }}
+                />
             </label>
             <label>
                 Arrival Airport:
-                <input type="text" value={arrivalAirport} onChange={onEditField(setArrivalAirport)} />
+                <input
+                    type="text"
+                    value={arrivalAirport}
+                    onChange={(e) => {
+                        setArrivalAirport(e.target.value);
+                        updateDetails();
+                    }}
+                />
             </label>
             <label>
                 Departure Time:
-                <input type="datetime-local" value={departureTime} onChange={onEditField(setDepartureTime)} />
+                <input
+                    type="datetime-local"
+                    value={departureTime}
+                    onChange={(e) => {
+                        setDepartureTime(e.target.value);
+                        updateDetails();
+                    }}
+                />
             </label>
             <label>
                 Arrival Time:
-                <input type="datetime-local" value={arrivalTime} onChange={onEditField(setArrivalTime)} />
+                <input
+                    type="datetime-local"
+                    value={arrivalTime}
+                    onChange={(e) => {
+                        setArrivalTime(e.target.value);
+                        updateDetails();
+                    }}
+                />
             </label>
             <label>
                 Airline:
-                <input type="text" value={airline} onChange={onEditField(setAirline)} />
+                <input
+                    type="text"
+                    value={airline}
+                    onChange={(e) => {
+                        setAirline(e.target.value);
+                        updateDetails();
+                    }}
+                />
             </label>
         </>
     );

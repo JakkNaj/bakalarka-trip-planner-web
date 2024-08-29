@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { LodgingType } from '../../types/activities/ActivitiesTypes';
 
-export const LodgingActivityForm = ({ setDetails }) => {
+type LodgingActivityFormProps = {
+    setDetails: (details: LodgingType) => void;
+};
+
+export const LodgingActivityForm = ({ setDetails } : LodgingActivityFormProps) => {
     const [lodgingName, setLodgingName] = useState('');
     const [checkInTime, setCheckInTime] = useState('');
     const [checkOutTime, setCheckOutTime] = useState('');
@@ -8,12 +13,12 @@ export const LodgingActivityForm = ({ setDetails }) => {
     const [contactNumber, setContactNumber] = useState('');
     const [reservationNumber, setReservationNumber] = useState('');
 
-    const onEditField = (fieldSetter) => (e) => {
+    const onEditField = (fieldSetter: (value: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
         fieldSetter(e.target.value);
         setDetails({
             lodging_name: lodgingName,
-            check_in_time: checkInTime,
-            check_out_time: checkOutTime,
+            check_in_time: new Date(checkInTime),
+            check_out_time: new Date(checkOutTime),
             address,
             contact_number: contactNumber,
             reservation_number: reservationNumber,

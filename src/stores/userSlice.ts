@@ -1,17 +1,25 @@
 import { fetchUserData, signInWithGoogle, signOutUser } from '../utils/user_api.ts';
 import { UserType } from '../types/user/UserType.ts';
-import {UserResponseType} from "../types/user/UserMetadaResponse.ts";
+import { UserResponseType } from "../types/user/UserMetadaResponse.ts";
+import { StateCreator } from 'zustand';
 
-export const createUserSlice = (set) => ({
+ export interface userSlice {
+    user: UserType | null;
+    fetchUserData: () => Promise<boolean>;
+    login: () => Promise<void>;
+    logout: (navigate: (path: string) => void) => Promise<void>;
+}
+
+export const createUserSlice : StateCreator<userSlice, [], [], userSlice> = (set) => ({
     user: null as UserType | null,
 
     fetchUserData: async () => {
         const userMetadata = await fetchUserData();
         if (userMetadata) {
             set({ user: filterUserMetadata(userMetadata) });
-            return true;  // Return true if user is fetched successfully
+            return true;
         }
-        return false;  // Return false if no user data
+        return false; 
     },
 
     login: async () => {

@@ -6,19 +6,24 @@ import { FormControl, TextField, Button, Typography } from '@mui/material';
 import {fonts} from "../assets/fonts.ts";
 import {colors} from "../assets/colors.ts";
 
-export const NewTripForm = ({ onClose }) => {
+type NewTripFormProps = {
+    onClose: () => void;
+};
+
+export const NewTripForm = ({ onClose }: NewTripFormProps) => {
     const { user, addTrip } = useStore();
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [dateStart, setDateStart] = useState<string>(new Date().toISOString().slice(0, 10));
     const [dateEnd, setDateEnd] = useState<string>(new Date().toISOString().slice(0, 10));
+    const [location, setLocation] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
 
     if (!user) {
         return <Typography>Please log in to create a new trip.</Typography>;
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const newTrip = {
@@ -27,13 +32,15 @@ export const NewTripForm = ({ onClose }) => {
                 date_start: new Date(dateStart),
                 date_end: new Date(dateEnd),
                 user_id: user.id,
+                location: location,
             };
 
             const insertedTrip = await insertTrip(newTrip);
             console.log('Trip created:', insertedTrip);
             addTrip(insertedTrip);
-        } catch (e) {
-            console.error('Error creating trip:', e.message);
+        } catch (e : unknown) {
+            const error = e as Error;
+            console.error('Error creating trip:', error.message);
             setError('Failed to create trip. Please try again later.');
         }
 
@@ -77,6 +84,14 @@ export const NewTripForm = ({ onClose }) => {
                         value={dateEnd}
                         onChange={(e) => setDateEnd(e.target.value)}
                         InputLabelProps={{ shrink: true }}
+                        required
+                    />
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <Styled.TextField
+                        label="Location"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
                         required
                     />
                 </FormControl>

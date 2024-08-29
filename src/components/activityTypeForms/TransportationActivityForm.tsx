@@ -1,6 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { TransportType } from '../../types/activities/ActivitiesTypes';
 
-export const TransportationActivityForm = ({ setDetails }) => {
+type TransportationActivityFormProps = {
+    setDetails: (details : TransportType) => void;
+};
+
+export const TransportationActivityForm = ({ setDetails } : TransportationActivityFormProps) => {
     const [transportType, setTransportType] = useState('');
     const [departureLocation, setDepartureLocation] = useState('');
     const [arrivalLocation, setArrivalLocation] = useState('');
@@ -8,16 +13,16 @@ export const TransportationActivityForm = ({ setDetails }) => {
     const [arrivalTime, setArrivalTime] = useState('');
     const [provider, setProvider] = useState('');
 
-    const onEditField = (fieldSetter) => (e) => {
+    const onEditField = (fieldSetter : (value : string) => void) => (e : React.ChangeEvent<HTMLInputElement>) => {
         fieldSetter(e.target.value);
         setDetails({
             transport_type: transportType,
             departure_location: departureLocation,
             arrival_location: arrivalLocation,
-            departure_time: departureTime,
-            arrival_time: arrivalTime,
+            departure_time: new Date(departureTime),
+            arrival_time: new Date(arrivalTime),
             provider,
-        });
+        })
     };
 
     return (

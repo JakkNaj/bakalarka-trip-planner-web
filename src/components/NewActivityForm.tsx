@@ -5,39 +5,47 @@ import {FlightActivityForm} from "./activityTypeForms/FlightActivityForm.tsx";
 import {ReminderActivityForm} from "./activityTypeForms/ReminderActivityForm.tsx";
 import {LodgingActivityForm} from "./activityTypeForms/LodgingActivityForm.tsx";
 import {TransportationActivityForm} from "./activityTypeForms/TransportationActivityForm.tsx";
+import { ActivityDetailsType, InsertActivityType } from '../types/activities/ActivitiesTypes.ts';
 
-export const NewActivityForm = ({onClose, onSubmit, tripId}) => {
+type ActivityFormProps = {
+    onClose: () => void;
+    onSubmit: (newActivity: InsertActivityType) => Promise<void>;
+    tripId: number;
+};
+
+export const NewActivityForm = ({onClose, onSubmit, tripId}: ActivityFormProps) => {
     const [baseActivityDetails, setBaseActivityDetails] = useState({
         trip_id: tripId,
         name: "" as string,
-        timestamp_start: new Date().toISOString().slice(0, 10),
-        timestamp_end: new Date().toISOString().slice(0, 10),
+        timestamp_start: new Date(),
+        timestamp_end: new Date(),
         activity_details: {},
         type: '' as ActivityTypes,
+        details: {} as ActivityDetailsType,
     });
 
-    const handleActivityTypeChange = (e) => {
+    const handleActivityTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setBaseActivityDetails({
             ...baseActivityDetails,
-            type: e.target.value,
+            type: e.target.value as ActivityTypes,
         })
     };
 
-    const handleDetailChange = (e) => {
+    const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBaseActivityDetails({
             ...baseActivityDetails,
             [e.target.name]: e.target.value,
         });
     };
 
-    const setTypeDetails = (details) => {
+    const setTypeDetails = (details: ActivityDetailsType) => {
         setBaseActivityDetails({
             ...baseActivityDetails,
             activity_details: details,
         });
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         onSubmit(baseActivityDetails);
     };
@@ -68,12 +76,12 @@ export const NewActivityForm = ({onClose, onSubmit, tripId}) => {
             </label>
             <label>
                 Start Time:
-                <input type="date" name="timestamp_start" value={baseActivityDetails.timestamp_start}
+                <input type="date" name="timestamp_start" value={baseActivityDetails.timestamp_start.toLocaleString()}
                        onChange={handleDetailChange} required/>
             </label>
             <label>
                 End Time:
-                <input type="date" name="timestamp_end" value={baseActivityDetails.timestamp_end}
+                <input type="date" name="timestamp_end" value={baseActivityDetails.timestamp_end.toLocaleString()}
                        onChange={handleDetailChange} required/>
             </label>
             <label>

@@ -4,7 +4,7 @@ import { Activity } from '../../components/Activity.tsx';
 import { useStore } from '../../stores/globalStore.ts';
 import { NewActivityForm } from '../../components/NewActivityForm.tsx';
 import { insertActivity } from "../../utils/activity_api.ts";
-import {ActivityType} from "../../types/activities/ActivitiesTypes.ts";
+import {ActivityType, InsertActivityType} from "../../types/activities/ActivitiesTypes.ts";
 import styled from "styled-components";
 import {colors} from "../../assets/colors.ts";
 import {fonts} from "../../assets/fonts.ts";
@@ -17,7 +17,6 @@ import {VerticalStepper} from "../../components/VerticalStepper.tsx";
 export const TripPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { setTripImage } = useStore();
     const trip = useStore().getTripById(Number(id));
     const { insertActivityInsideTrip } = useStore();
     const [showNewActivityForm, setShowNewActivityForm] = useState(false);
@@ -26,14 +25,14 @@ export const TripPage = () => {
         return <div>No trip with this ID present...</div>;
     }
 
-    const navigateToEditActivity = (activityId) => {
+    const navigateToEditActivity = (activityId: number) => {
         navigate(`/trip/${id}/activity/${activityId}`);
     };
 
-    const handleAddActivity = async (newActivity) => {
+    const handleAddActivity = async (newActivity: InsertActivityType) => {
         // todo add loading state
         //insert into db
-        const insertedActivity= await insertActivity(newActivity);
+        const insertedActivity = await insertActivity(newActivity);
         //update store
         insertActivityInsideTrip(insertedActivity as ActivityType, trip.id);
     };
@@ -47,13 +46,9 @@ export const TripPage = () => {
         ));
     };
 
-    const onEditTrip = (id) => {
+    const onEditTrip = (id: number) => {
         //todo
          console.log('Edit trip with id:', id);
-    }
-
-    const handleImageUpload = (imageUrl) => {
-        setTripImage(trip.id, imageUrl);
     }
 
     return (
@@ -61,7 +56,6 @@ export const TripPage = () => {
             <TripPageHeader
                 trip={trip}
                 onEditTrip={onEditTrip}
-                handleImageUpload={handleImageUpload}
             />
 
             <Styled.ButtonBox>

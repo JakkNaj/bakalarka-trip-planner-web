@@ -1,15 +1,19 @@
 import { create } from 'zustand';
-import { createUserSlice } from './userSlice.ts';
-import { createTripSlice } from './tripSlice.ts';
+import { createUserSlice, userSlice } from './userSlice.ts';
+import { createTripSlice, tripSlice } from './tripSlice.ts';
 
-export const useStore = create((set, get) => {
-    const userSlice = createUserSlice(set);
-    const tripSlice = createTripSlice(set, get);
+interface globalStore extends userSlice, tripSlice {
+    logoutAndReset: (navigate: (path: string) => void) => void;
+}
+
+export const useStore = create<globalStore>()((...a) => {
+    const userSlice = createUserSlice(...a);
+    const tripSlice = createTripSlice(...a);
 
     return {
         ...userSlice,
         ...tripSlice,
-        logoutAndReset: async (navigate) => {
+        logoutAndReset: async (navigate : (path : string) => void) => {
             await userSlice.logout(navigate);
             tripSlice.reset();
         }

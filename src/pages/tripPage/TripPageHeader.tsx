@@ -12,10 +12,9 @@ import {TripType} from "../../types/trip/TripType.ts";
 interface TripPageHeaderProps {
     trip: TripType;
     onEditTrip: (id: number) => void;
-    handleImageUpload: (imageUrl: string) => void;
 }
 
-export const TripPageHeader = ({ trip, onEditTrip, handleImageUpload }: TripPageHeaderProps) => {
+export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
     const navigate = useNavigate();
 
     const formatDate = (date: Date) => {
@@ -58,7 +57,6 @@ export const TripPageHeader = ({ trip, onEditTrip, handleImageUpload }: TripPage
             <TripImage
                 tripId={trip.id}
                 imageUrl={trip.imageUrl}
-                onUploadSuccess={handleImageUpload}
                 showUploadButton={true}
             />
         </Styled.HeadingContainer>

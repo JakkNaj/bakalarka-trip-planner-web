@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useStore } from "../stores/globalStore.ts";
 import { TripsDisplay } from "../components/TripsDisplay.tsx";
 import { NewTripForm } from "../components/NewTripForm.tsx";
@@ -13,6 +13,10 @@ export const HomePage = () => {
     const [showForm, setShowForm] = useState(false);
     const { orderTripsBy } = useStore();
     const [isBackgroundLoading, setIsBackgroundLoading] = useState(false);
+
+    const handleBackgroundLoadingSet = useCallback((loading: boolean) => {
+        setIsBackgroundLoading(loading);
+    }, []);
 
     return (
         <Styled.PageContainer>
@@ -29,7 +33,7 @@ export const HomePage = () => {
             </Styled.HeadingContainer>
             <Styled.ContentContainer>
                 {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
-                <TripsDisplay setIsBackgroundLoading={setIsBackgroundLoading}/>
+                <TripsDisplay setIsBackgroundLoading={handleBackgroundLoadingSet}/>
             </Styled.ContentContainer>
         </Styled.PageContainer>
     );

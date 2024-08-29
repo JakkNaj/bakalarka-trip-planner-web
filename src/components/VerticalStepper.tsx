@@ -11,7 +11,7 @@ export const VerticalStepper = ({ activities }: VerticalStepperProps) => {
     const [activeStep, setActiveStep] = useState<number>(0);
 
     const handleStepClick = (index: number) => {
-        setActiveStep(activeStep === index ? null : index);
+        setActiveStep(activeStep === index ? 0 : index);
     };
 
     return (

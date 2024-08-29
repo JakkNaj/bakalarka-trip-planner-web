@@ -1,13 +1,18 @@
 import { useState } from 'react';
+import { ReminderType } from '../../types/activities/ActivitiesTypes';
 
-export const ReminderActivityForm = ({ setDetails }) => {
+type ReminderActivityFormProps = {
+    setDetails: (details: ReminderType) => void;
+};
+
+export const ReminderActivityForm = ({ setDetails }: ReminderActivityFormProps) => {
     const [reminderTime, setReminderTime] = useState('');
     const [note, setNote] = useState('');
 
-    const onEditField = (fieldSetter) => (e) => {
+    const onEditField = (fieldSetter: (value: string) => void) => (e : React.ChangeEvent<HTMLInputElement>) => {
         fieldSetter(e.target.value);
         setDetails({
-            reminder_time: reminderTime,
+            reminder_time: new Date(reminderTime),
             note,
         });
     };

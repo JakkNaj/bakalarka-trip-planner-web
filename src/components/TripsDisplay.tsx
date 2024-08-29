@@ -16,32 +16,42 @@ export const TripsDisplay = ({setIsBackgroundLoading}: TripsDisplayProps) => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        const fetchInitialTrips = async () => {
+            try {
+                setIsBackgroundLoading(true);
+                if (user?.id === undefined) {
+                    return null;
+                }
+                await fetchTrips(user.id);
+            } catch (e) {
+                const error = e as Error;
+                console.error('Error fetching trips:', error.message);
+                setError('Failed to load trips. Please try again later.');
+            } finally {
+                setIsBackgroundLoading(false);
+            }
+        };
+
         if (!trips.length) {
             fetchInitialTrips();
         } else {
             setIsBackgroundLoading(true);
-            fetchTrips(user?.id)
+            if (user === null) {
+                return;
+            }
+            fetchTrips(user.id)
+                .then(() => {
+                    setIsBackgroundLoading(false);
+                })
                 .catch((e) => {
                     console.error('Error fetching trips in background:', e.message);
                     setError('Failed to update trips.');
-                })
-                .finally(() => {
-                    setIsBackgroundLoading(false)
+                    setIsBackgroundLoading(false);
                 });
         }
-    }, [fetchTrips, trips.length]);
+    }, [fetchTrips, trips.length, setIsBackgroundLoading, user]);
 
-    const fetchInitialTrips = async () => {
-        try {
-            setIsBackgroundLoading(true);
-            await fetchTrips(user?.id);
-        } catch (e) {
-            console.error('Error fetching trips:', e.message);
-            setError('Failed to load trips. Please try again later.');
-        } finally {
-            setIsBackgroundLoading(false);
-        }
-    };
+   
 
     const filteredTrips = trips.filter((trip) => {
         if (orderTripsBy === OrderByTypes.UPCOMING) {

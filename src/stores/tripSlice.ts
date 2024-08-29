@@ -1,26 +1,47 @@
 import { TripType } from "../types/trip/TripType.ts";
-import {fetchTripImageUrl, fetchTrips} from "../utils/trip_api.ts";
+import {fetchTripImageUrl, fetchTrips as fetchTripsFromApi} from "../utils/trip_api.ts";
 import {ActivityType} from "../types/activities/ActivitiesTypes.ts";
 import {OrderByTypes} from "../types/orderByTypes.ts";
+import { StateCreator } from "zustand";
 
-export const createTripSlice = (set, get) => ({
+export interface tripSlice {
+    trips: TripType[];
+    orderTripsBy: OrderByTypes;
+    setTrips: (trips: TripType[]) => void;
+    setOrderTripsBy: (orderBy: OrderByTypes) => void;
+    fetchTrips: (userId: string) => Promise<void>;
+    addTrip: (trip: TripType) => void;
+    updateTrip: (updatedTrip: TripType) => void;
+    deleteTrip: (tripId: number) => void;
+    getTripById: (tripId: number) => TripType | undefined;
+    reset: () => void;
+    insertActivityInsideTrip: (activity: ActivityType, tripId: number) => void;
+    setTripImage: (tripId: number, url: string) => void;
+}
+
+export const createTripSlice: StateCreator<tripSlice, [], [], tripSlice> = (set, get) => ({
     trips: [] as TripType[],
     setTrips: (trips: TripType[]) => set({ trips }),
 
     orderTripsBy: OrderByTypes.UPCOMING,
     setOrderTripsBy: (orderBy: OrderByTypes) => set({ orderTripsBy: orderBy }),
 
-    fetchTrips: async (userId) => {
-        const trips = await fetchTrips();
-        if (trips && userId) {
-            const updatedTrips = await Promise.all(trips.map(async (trip) => {
-                const imageUrl = await fetchTripImageUrl(trip.id, userId);
-                if (imageUrl) {
-                    trip.imageUrl = imageUrl;
-                }
-                return trip;
-            }));
-            set({ trips: updatedTrips });
+    fetchTrips: async (userId: string): Promise<void> => {
+        try {
+            const trips = await fetchTripsFromApi();
+            if (trips && userId) {
+                const updatedTrips = await Promise.all(trips.map(async (trip) => {
+                    const imageUrl = await fetchTripImageUrl(trip.id, userId);
+                    if (imageUrl) {
+                        trip.imageUrl = imageUrl;
+                    }
+                    return trip;
+                }));
+                set({ trips: updatedTrips });
+            }
+        } catch (error) {
+            console.error('Error fetching trips:', error);
+            throw error;
         }
     },
 

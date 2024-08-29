@@ -11,13 +11,13 @@ interface TripImageProps {
 export const TripImage = ({ imageUrl, tripId, showUploadButton = false }: TripImageProps) => {
     const [placeholderImage, setPlaceholderImage] = useState<string | null>(null);
 
-    const placeholderImages = [
-        () => import('../assets/placeholders/annie-spratt-unsplash-trip-photo.png'),
-        () => import('../assets/placeholders/deactivated-account-unsplash-luggage.png'),
-        () => import('../assets/placeholders/nils-nedel-unsplash-plane-side.png'),
-    ];
-
     useEffect(() => {
+        const placeholderImages = [
+            () => import('../assets/placeholders/annie-spratt-unsplash-trip-photo.png'),
+            () => import('../assets/placeholders/deactivated-account-unsplash-luggage.png'),
+            () => import('../assets/placeholders/nils-nedel-unsplash-plane-side.png'),
+        ];
+    
         const loadPlaceholderImage = async () => {
             const index = tripId % placeholderImages.length;
             const { default: image } = await placeholderImages[index]();

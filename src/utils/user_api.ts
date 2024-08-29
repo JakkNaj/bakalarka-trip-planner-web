@@ -34,7 +34,7 @@ export const signOutUser = async (): Promise<void> => {
     }
 };
 
-export const checkUserSession = async (navigate): Promise<UserResponseType | null> => {
+export const checkUserSession = async (navigate : (path : string) => void): Promise<UserResponseType | null> => {
     try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
@@ -46,8 +46,10 @@ export const checkUserSession = async (navigate): Promise<UserResponseType | nul
             navigate('/login');
         }
     } catch (e) {
-        console.error('Error checking session:', e.message);
+        const error = e as Error;
+        console.error('Error checking session:', error.message);
         navigate('/login');
     }
+    return null;
 }
 
