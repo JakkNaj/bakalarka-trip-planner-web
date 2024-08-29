@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../stores/globalStore.ts";
 import { TripsDisplay } from "../components/TripsDisplay.tsx";
 import { NewTripForm } from "../components/NewTripForm.tsx";
@@ -7,16 +7,19 @@ import styled from "styled-components";
 import { fonts } from "../assets/fonts.ts";
 import { colors } from "../assets/colors.ts";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import {Button, CircularProgress} from "@mui/material";
+import {Button} from "@mui/material";
+import { useLoaderData } from "react-router-dom";
+import { TripType } from "../types/trip/TripType.ts";
 
 export const HomePage = () => {
     const [showForm, setShowForm] = useState(false);
-    const { orderTripsBy } = useStore();
-    const [isBackgroundLoading, setIsBackgroundLoading] = useState(false);
+    const { orderTripsBy, setTrips } = useStore();
+    const trips = useLoaderData() as TripType[];
 
-    const handleBackgroundLoadingSet = useCallback((loading: boolean) => {
-        setIsBackgroundLoading(loading);
-    }, []);
+    useEffect(() => {
+        //set trips (from loader) in the store
+        setTrips(trips);
+    }, [trips, setTrips]);
 
     return (
         <Styled.PageContainer>
@@ -29,11 +32,10 @@ export const HomePage = () => {
                     <Styled.KeyboardBackspaceIcon className="white-backspace" />
                     Add new Trip
                 </Styled.AddTripButton>
-                {isBackgroundLoading && <CircularProgress style={{ color: colors.mainBlue }} size={32} />}
             </Styled.HeadingContainer>
             <Styled.ContentContainer>
                 {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
-                <TripsDisplay setIsBackgroundLoading={handleBackgroundLoadingSet}/>
+                <TripsDisplay trips={trips} />
             </Styled.ContentContainer>
         </Styled.PageContainer>
     );

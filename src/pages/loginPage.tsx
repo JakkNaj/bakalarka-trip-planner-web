@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import {useEffect, useState} from "react";
 import supabase from "../config/supabaseClient.ts";
 import { useStore } from "../stores/globalStore.ts";
-import {checkUserSession} from "../utils/user_api.ts";
 
 export const LoginPage = () => {
     const navigate = useNavigate();
@@ -10,9 +9,6 @@ export const LoginPage = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-
-        checkUserSession(navigate);
-
         const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
             if (event === 'SIGNED_IN') {
                 (async () => {

@@ -1,37 +1,56 @@
-import { fetchUserData, signInWithGoogle, signOutUser } from '../utils/user_api.ts';
+import { fetchUserData, signInWithGoogle, signOutUser, tryToAuthUser } from '../utils/user_api.ts';
 import { UserType } from '../types/user/UserType.ts';
 import { UserResponseType } from "../types/user/UserMetadaResponse.ts";
 import { StateCreator } from 'zustand';
 
  export interface userSlice {
     user: UserType | null;
+    setUser: (user: UserType) => void;
     fetchUserData: () => Promise<boolean>;
     login: () => Promise<void>;
     logout: (navigate: (path: string) => void) => Promise<void>;
 }
 
-export const createUserSlice : StateCreator<userSlice, [], [], userSlice> = (set) => ({
-    user: null as UserType | null,
-
-    fetchUserData: async () => {
-        const userMetadata = await fetchUserData();
-        if (userMetadata) {
-            set({ user: filterUserMetadata(userMetadata) });
-            return true;
+export const createUserSlice: StateCreator<userSlice, [], [], userSlice> = (set) => {
+    const initializeUser = async () => {
+        try {
+            const userMetadata = await tryToAuthUser();
+            if (userMetadata) {
+                set({ user: filterUserMetadata(userMetadata) });
+            }
+        } catch (error) {
+            console.error('Failed to authenticate user', error);
         }
-        return false; 
-    },
+    };
 
-    login: async () => {
-        await signInWithGoogle();
-    },
+    // immediate call to try to authenticate the user on app load
+    initializeUser();
 
-    logout: async (navigate) => {
-        await signOutUser();
-        set({ user: null });
-        navigate('/login');
-    },
-});
+    return {
+        user: null as UserType | null,
+
+        setUser: (user: UserType) => set({ user }),
+
+        fetchUserData: async () => {
+            const userMetadata = await fetchUserData();
+            if (userMetadata) {
+                set({ user: filterUserMetadata(userMetadata) });
+                return true;
+            }
+            return false;
+        },
+
+        login: async () => {
+            await signInWithGoogle();
+        },
+
+        logout: async (navigate) => {
+            await signOutUser();
+            set({ user: null });
+            navigate('/login');
+        },
+    };
+};
 
 const filterUserMetadata = (metadata: UserResponseType): UserType => {
     return {

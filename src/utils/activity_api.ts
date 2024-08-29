@@ -49,3 +49,55 @@ const insertDetailsActivity = async (details: ActivityType, tableName: string) =
         throw new Error(error.message);
     }
 }
+
+
+export const fetchActivity = async (activityId: number) => {
+    const { data: baseData, error: baseError } = await supabase
+        .from('activities')
+        .select('*')
+        .eq('id', activityId)
+        .single();
+
+    if (baseError) {
+        throw new Error(baseError.message);
+    }
+
+    const baseDetails = baseData as ActivityType;
+    let typeDetails;
+
+    switch(baseDetails.type) {
+        case ActivityTypes.GENERAL:
+            typeDetails = await fetchDetailsActivity(activityId, 'general_activities');
+            break;
+        case ActivityTypes.FLIGHT:
+            typeDetails = await fetchDetailsActivity(activityId, 'flights');
+            break;
+        case ActivityTypes.TRANSPORTATION:
+            typeDetails = await fetchDetailsActivity(activityId, 'transportation');
+            break;
+        case ActivityTypes.LODGING:
+            typeDetails = await fetchDetailsActivity(activityId, 'lodgings');
+            break;
+        case ActivityTypes.REMINDER:
+            typeDetails = await fetchDetailsActivity(activityId, 'reminders');
+            break;
+        default:
+            throw new Error('Invalid activity type.');
+    }
+
+    return {...baseDetails, details: typeDetails};
+}
+
+const fetchDetailsActivity = async (activityId: number, tableName: string) => {
+    const { data, error } = await supabase
+        .from(tableName)
+        .select('*')
+        .eq('activity_id', activityId)
+        .single();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return data;
+}

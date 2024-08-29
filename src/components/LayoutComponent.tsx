@@ -1,32 +1,20 @@
 import {Outlet, useNavigate} from "react-router-dom";
 import styled from "styled-components";
 import { colors } from "../assets/colors.ts";
-import { CircularProgress } from "@mui/material";
-import { useStore } from "../stores/globalStore.ts";
-import { useEffect, useState } from "react";
 import { HeaderComponent } from "./HeaderComponent.tsx";
+import { useEffect } from "react";
+import { useStore } from "../stores/globalStore.ts";
 
 export const LayoutComponent = () => {
+    const {user} = useStore();
     const navigate = useNavigate();
-    const { fetchUserData } = useStore();
-    const [isLoading, setIsLoading] = useState(true);
-
+    
     useEffect(() => {
-        const checkAuth = async () => {
-            const isAuthenticated = await fetchUserData();
-            if (!isAuthenticated) {
-                navigate('/login');
-            } else {
-                setIsLoading(false);
-            }
-        };
+        if (!user) {
+            navigate("/login");
+        }
+    }, [navigate, user]);
 
-        checkAuth();
-    }, [fetchUserData]);
-
-    if (isLoading) {
-        return <CircularProgress />;
-    }
 
     return (
         <Styled.PageContainer>

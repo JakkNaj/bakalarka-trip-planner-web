@@ -45,7 +45,16 @@ export const createTripSlice: StateCreator<tripSlice, [], [], tripSlice> = (set,
         }
     },
 
-    addTrip: (trip: TripType) => set((state) => ({ trips: [...state.trips, trip] })),
+    addTrip( trip: TripType ) {
+        set((state) => {
+            const tripIndex = state.trips.findIndex((t) => t.id === trip.id);
+            if (tripIndex === -1) {
+                return { trips: [...state.trips, trip] };
+            }
+            state.trips[tripIndex] = trip;
+            return { trips: [...state.trips] };
+        })
+    },
 
     updateTrip: (updatedTrip: TripType) => set((state) => ({
         trips: state.trips.map((trip) => trip.id === updatedTrip.id ? updatedTrip : trip)
@@ -67,7 +76,12 @@ export const createTripSlice: StateCreator<tripSlice, [], [], tripSlice> = (set,
         set((state) => {
             const trip = state.trips.find((trip) => trip.id === tripId);
             if (trip) {
-                trip.trip_activities = [...trip.trip_activities, activity];
+                const activityIndex = trip.trip_activities.findIndex((a) => a.activity_id === activity.activity_id);
+                if (activityIndex === -1) {
+                    trip.trip_activities = [...trip.trip_activities, activity];
+                } else {
+                    trip.trip_activities[activityIndex] = activity;
+                }
             }
             return { trips: [...state.trips] };
         });

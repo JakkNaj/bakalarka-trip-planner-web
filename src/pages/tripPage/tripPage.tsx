@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Activity } from '../../components/Activity.tsx';
 import { useStore } from '../../stores/globalStore.ts';
 import { NewActivityForm } from '../../components/NewActivityForm.tsx';
@@ -12,21 +12,22 @@ import {Box, Button} from "@mui/material";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import {TripPageHeader} from "./TripPageHeader.tsx";
 import {VerticalStepper} from "../../components/VerticalStepper.tsx";
+import { TripType } from '../../types/trip/TripType.ts';
 
 
 export const TripPage = () => {
-    const { id } = useParams();
     const navigate = useNavigate();
-    const trip = useStore().getTripById(Number(id));
-    const { insertActivityInsideTrip } = useStore();
+    const trip = useLoaderData() as TripType;
+    const { insertActivityInsideTrip, addTrip } = useStore();
     const [showNewActivityForm, setShowNewActivityForm] = useState(false);
 
-    if (!trip) {
-        return <div>No trip with this ID present...</div>;
-    }
+    useEffect(() => {
+        // set trip (from loader) in store
+        addTrip(trip);
+    }, [addTrip, trip]);
 
     const navigateToEditActivity = (activityId: number) => {
-        navigate(`/trip/${id}/activity/${activityId}`);
+        navigate(`/trip/${trip.id}/activity/${activityId}`);
     };
 
     const handleAddActivity = async (newActivity: InsertActivityType) => {

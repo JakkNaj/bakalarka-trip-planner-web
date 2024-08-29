@@ -1,57 +1,18 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../stores/globalStore.ts";
 import { OrderByTypes } from "../types/orderByTypes.ts";
 import styled from "styled-components";
 import {fonts} from "../assets/fonts.ts";
 import {TripCard} from "./TripCard.tsx";
+import { TripType } from "../types/trip/TripType.ts";
 
 interface TripsDisplayProps {
-    setIsBackgroundLoading: (loading: boolean) => void;
+    trips: TripType[];
 }
 
-export const TripsDisplay = ({setIsBackgroundLoading}: TripsDisplayProps) => {
+export const TripsDisplay = ({trips}: TripsDisplayProps) => {
     const navigate = useNavigate();
-    const { user, trips, fetchTrips, orderTripsBy } = useStore();
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchInitialTrips = async () => {
-            try {
-                setIsBackgroundLoading(true);
-                if (user?.id === undefined) {
-                    return null;
-                }
-                await fetchTrips(user.id);
-            } catch (e) {
-                const error = e as Error;
-                console.error('Error fetching trips:', error.message);
-                setError('Failed to load trips. Please try again later.');
-            } finally {
-                setIsBackgroundLoading(false);
-            }
-        };
-
-        if (!trips.length) {
-            fetchInitialTrips();
-        } else {
-            setIsBackgroundLoading(true);
-            if (user === null) {
-                return;
-            }
-            fetchTrips(user.id)
-                .then(() => {
-                    setIsBackgroundLoading(false);
-                })
-                .catch((e) => {
-                    console.error('Error fetching trips in background:', e.message);
-                    setError('Failed to update trips.');
-                    setIsBackgroundLoading(false);
-                });
-        }
-    }, [fetchTrips, trips.length, setIsBackgroundLoading, user]);
-
-   
+    const { orderTripsBy } = useStore();
 
     const filteredTrips = trips.filter((trip) => {
         if (orderTripsBy === OrderByTypes.UPCOMING) {
@@ -75,10 +36,8 @@ export const TripsDisplay = ({setIsBackgroundLoading}: TripsDisplayProps) => {
         ));
     }
 
-
     return (
         <Styled.TripsContainer>
-            {error && <p>{error}</p>}
             {displayTrips()}
         </Styled.TripsContainer>
     );

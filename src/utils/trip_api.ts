@@ -2,7 +2,7 @@ import supabase from "../config/supabaseClient.ts";
 import { TripType } from "../types/trip/TripType.ts";
 import {TripInsertType} from "../types/trip/TripInsertType.ts";
 
-export const fetchTrips = async (): Promise<TripType[] | null> => {
+export const fetchTrips = async (): Promise<TripType[]> => {
     try {
         const { data, error } = await supabase
             .from('trips')
@@ -23,8 +23,30 @@ export const fetchTrips = async (): Promise<TripType[] | null> => {
         return data as TripType[];
     } catch (error) {
         console.error('Unexpected error during trip fetching:', error);
+        return [];
+    }
+};
+
+export const fetchTrip = async (id: number): Promise<TripType | null> => {
+    const {data, error} = await supabase
+            .from('trips')
+            .select(`
+                id,
+                title,
+                description,
+                date_start,
+                date_end,
+                location,
+                trip_activities ( * )
+            `)
+            .eq('id', id)
+            .single();
+        
+    if (error) {
+        console.error('Error fetching trip:', error.message);
         return null;
     }
+    return data as TripType;
 };
 
 export const fetchTripImageUrl = async (tripId: number, userId: string | undefined): Promise<string | null> => {
