@@ -32,11 +32,11 @@ export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
                 <Styled.Description>{trip.location}</Styled.Description>
                 <Styled.Dates>
                     <h4 style={{margin: 0}}>from: </h4 >
-                    <Styled.Description style={{margin: 0}}>{formatDate(trip.date_start)}</Styled.Description>
+                    <Styled.Description style={{margin: 0}}>{formatDate(new Date(trip.date_start))}</Styled.Description>
                 </Styled.Dates>
                 <Styled.Dates>
                     <h4 style={{margin: 0}}>until: </h4>
-                    <Styled.Description style={{margin: 0}}>{formatDate(trip.date_end)}</Styled.Description>
+                    <Styled.Description style={{margin: 0}}>{formatDate(new Date(trip.date_end))}</Styled.Description>
                 </Styled.Dates>
                 {trip?.description && trip.description.length != 0 &&
                     (

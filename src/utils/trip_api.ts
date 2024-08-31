@@ -1,6 +1,7 @@
 import supabase from "../config/supabaseClient.ts";
-import { TripType } from "../types/trip/TripType.ts";
-import {TripInsertType} from "../types/trip/TripInsertType.ts";
+import { TripType, TripTypeSchema } from "../types/trip/TripType.ts";
+import { TripInsertType } from "../types/trip/TripInsertType.ts";
+import { fromZodError } from "zod-validation-error";
 
 export const fetchTrips = async (): Promise<TripType[]> => {
     try {
@@ -8,6 +9,7 @@ export const fetchTrips = async (): Promise<TripType[]> => {
             .from('trips')
             .select(`
                 id,
+                created_at,
                 title,
                 description,
                 date_start,
@@ -20,7 +22,14 @@ export const fetchTrips = async (): Promise<TripType[]> => {
             console.error('Error fetching trips:', error.message);
             throw error;
         }
-        return data as TripType[];
+
+        console.log(data);
+        const parsedData = TripTypeSchema.array().safeParse(data);
+        if (!parsedData.success) {
+            console.log('Error parsing data:', fromZodError(parsedData.error));
+        } else {
+            return parsedData?.data;
+        }
     } catch (error) {
         console.error('Unexpected error during trip fetching:', error);
         return [];

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Stepper, Step, StepLabel, StepContent, Typography } from '@mui/material';
 import { ActivityType } from '../types/activities/ActivitiesTypes.ts';
 import {colors} from "../assets/colors.ts";
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface VerticalStepperProps {
     activities: ActivityType[];

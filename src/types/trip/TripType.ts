@@ -1,13 +1,18 @@
-import {ActivityType} from "../activities/ActivitiesTypes.ts";
+import { z } from 'zod';
+import { ActivityTypeSchema } from '../activities/ActivitiesTypes';
 
-export type TripType = {
-    id: number;
-    created_at: Date;
-    title: string;
-    description?: string;
-    date_start: Date;
-    date_end: Date;
-    location: string;
-    imageUrl?: string;
-    trip_activities: ActivityType[];
-};
+export const TripTypeSchema = z.object({
+    id: z.number(),
+    created_at: z.string().transform((str) => new Date(str)),
+    title: z.string(),
+    description: z.string().optional(),
+    date_start: z.string().transform((str) => new Date(str)),
+    date_end: z.string().transform((str) => new Date(str)),
+    location: z.string().nullable(),
+    imageUrl: z.string().optional(),
+    trip_activities: z.array(ActivityTypeSchema).optional(),
+});
+
+export const TripsSchema = z.array(TripTypeSchema);
+
+export type TripType = z.infer<typeof TripTypeSchema>;

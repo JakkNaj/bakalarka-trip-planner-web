@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export enum ActivityTypes {
     FLIGHT = 'flight',
     TRANSPORTATION = 'transportation',
@@ -5,4 +7,7 @@ export enum ActivityTypes {
     REMINDER = 'reminder',
     GENERAL = 'general',
 }
+
+const ActivityTypesEnum = z.nativeEnum(ActivityTypes);
+export type ActivityTypesEnum = z.infer<typeof ActivityTypesEnum>;
 

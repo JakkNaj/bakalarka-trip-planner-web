@@ -24,7 +24,6 @@ export const fetchUserData = async (): Promise<UserResponseType | null> => {
         return null;
     }
 
-    console.log('User data:', data);
     return {
         user_metadata: data?.user?.user_metadata as UserMetadataType,
         user_id: data?.user?.id as string

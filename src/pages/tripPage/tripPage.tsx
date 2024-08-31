@@ -14,13 +14,13 @@ import {TripPageHeader} from "./TripPageHeader.tsx";
 import {VerticalStepper} from "../../components/VerticalStepper.tsx";
 import { TripType } from '../../types/trip/TripType.ts';
 
-
 export const TripPage = () => {
     const navigate = useNavigate();
     const trip = useLoaderData() as TripType;
     const { insertActivityInsideTrip, addTrip } = useStore();
     const [showNewActivityForm, setShowNewActivityForm] = useState(false);
 
+    console.log("trip image url", trip.imageUrl);
     useEffect(() => {
         // set trip (from loader) in store
         addTrip(trip);

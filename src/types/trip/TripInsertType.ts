@@ -1,5 +1,12 @@
-import { TripType } from "./TripType.ts";
+import { z } from 'zod';
+import { TripTypeSchema } from './TripType';
 
-export type TripInsertType = Omit<TripType, 'id' | 'created_at' | 'trip_activities'> & {
-    user_id: string; // user_id is required for inserting a new trip
-};
+export const TripInsertTypeSchema = TripTypeSchema.omit({
+    id: true,
+    created_at: true,
+    trip_activities: true,
+}).extend({
+    user_id: z.string(),
+});
+
+export type TripInsertType = z.infer<typeof TripInsertTypeSchema>;
