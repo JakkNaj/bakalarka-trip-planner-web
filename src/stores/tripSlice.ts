@@ -76,9 +76,12 @@ export const createTripSlice: StateCreator<tripSlice, [], [], tripSlice> = (set,
         set((state) => {
             const trip = state.trips.find((trip) => trip.id === tripId);
             if (trip) {
+                if (!trip.trip_activities) {
+                    trip.trip_activities = [];
+                }
                 const activityIndex = trip.trip_activities.findIndex((a) => a.activity_id === activity.activity_id);
                 if (activityIndex === -1) {
-                    trip.trip_activities = [...trip.trip_activities, activity];
+                    trip.trip_activities.push(activity);
                 } else {
                     trip.trip_activities[activityIndex] = activity;
                 }

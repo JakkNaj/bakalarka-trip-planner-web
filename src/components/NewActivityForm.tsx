@@ -5,7 +5,7 @@ import {FlightActivityForm} from "./activityTypeForms/FlightActivityForm.tsx";
 import {ReminderActivityForm} from "./activityTypeForms/ReminderActivityForm.tsx";
 import {LodgingActivityForm} from "./activityTypeForms/LodgingActivityForm.tsx";
 import {TransportationActivityForm} from "./activityTypeForms/TransportationActivityForm.tsx";
-import { ActivityDetailsType, InsertActivityType } from '../types/activities/ActivitiesTypes.ts';
+import { ActivityDetailsType, InsertActivityDetailsType, InsertActivityType } from '../types/activities/ActivitiesTypes.ts';
 
 type ActivityFormProps = {
     onClose: () => void;
@@ -38,7 +38,7 @@ export const NewActivityForm = ({onClose, onSubmit, tripId}: ActivityFormProps) 
         });
     };
 
-    const setTypeDetails = (details: ActivityDetailsType) => {
+    const setTypeDetails = (details: InsertActivityDetailsType) => {
         setBaseActivityDetails({
             ...baseActivityDetails,
             activity_details: details,

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { TransportType } from '../../types/activities/ActivitiesTypes';
+import { InsertTransportType } from '../../types/activities/transport/TransportActivity';
 
 type TransportationActivityFormProps = {
-    setDetails: (details : TransportType) => void;
+    setDetails: (details : InsertTransportType) => void;
 };
 
 export const TransportationActivityForm = ({ setDetails } : TransportationActivityFormProps) => {

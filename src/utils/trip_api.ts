@@ -27,6 +27,7 @@ export const fetchTrips = async (): Promise<TripType[]> => {
         const parsedData = TripTypeSchema.array().safeParse(data);
         if (!parsedData.success) {
             console.log('Error parsing data:', fromZodError(parsedData.error));
+            return [];
         } else {
             return parsedData?.data;
         }
