@@ -7,9 +7,9 @@ import styled from "styled-components";
 import { fonts } from "../assets/fonts.ts";
 import { colors } from "../assets/colors.ts";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import {Button} from "@mui/material";
 import { useLoaderData } from "react-router-dom";
 import { TripType } from "../types/trip/TripType.ts";
+import { MainButton } from "../components/mainButton.tsx";
 
 export const HomePage = () => {
     const [showForm, setShowForm] = useState(false);
@@ -28,10 +28,9 @@ export const HomePage = () => {
                     <Styled.H1>Your Upcoming Trips</Styled.H1> :
                     <Styled.H1>Your Past Trips</Styled.H1>
                 }
-                <Styled.AddTripButton onClick={() => setShowForm(true)}>
-                    <Styled.KeyboardBackspaceIcon className="white-backspace" />
-                    Add new Trip
-                </Styled.AddTripButton>
+                <MainButton text="Add new Trip" right="4%" width="48%" onClick={() => setShowForm(true)} >
+                    <Styled.KeyboardBackspaceIcon />
+                </MainButton>
             </Styled.HeadingContainer>
             <Styled.ContentContainer>
                 {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
@@ -62,7 +61,7 @@ const Styled = {
         gap: "1rem",
         marginTop: "1rem",
     }),
-    AddTripButton: styled(Button)({
+    AddTripButton: styled.button({
         border: "none",
         fontSize: "1rem",
         textAlign: "center",
@@ -74,6 +73,7 @@ const Styled = {
         fontFamily: fonts.normal,
         transition: "background-color 0.4s, color 0.4s",
         padding: "0.2rem 0.4rem",
+        borderRadius: "0.25rem",
         "&::after": {
             content: '""',
             position: "absolute",

@@ -71,6 +71,7 @@ const Styled = {
         alignItems: "center",
         justifyContent: "space-between",
         gap: "0.4rem",
+        borderRadius: "0.25rem",
         '&:hover': {
             backgroundColor: colors.mainBlue,
             color: colors.white,
