@@ -9,7 +9,7 @@ import { colors } from "../assets/colors.ts";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useLoaderData } from "react-router-dom";
 import { TripType } from "../types/trip/TripType.ts";
-import { MainButton } from "../components/mainButton.tsx";
+import { MainButton } from "../components/MainButton.tsx";
 
 export const HomePage = () => {
     const [showForm, setShowForm] = useState(false);

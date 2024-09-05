@@ -4,8 +4,8 @@ import { TripType } from '../types/trip/TripType.ts';
 import {colors} from "../assets/colors.ts";
 import {fonts} from "../assets/fonts.ts";
 import styled from "styled-components";
-import {Button} from "@mui/material";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { MainButton } from "./MainButton.tsx";
 
 type TripCardProps = {
     trip: TripType;
@@ -30,12 +30,9 @@ export const TripCard = ({ trip, onShowDetails } : TripCardProps) => {
                 </Styled.Header>
                 <Styled.Location>{trip.location}</Styled.Location>
                 <Styled.Dates>{trip.date_start.toLocaleString()} - {trip.date_end.toLocaleString()}</Styled.Dates>
-                <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
-                    <Styled.Button onClick={(e) => { e.stopPropagation(); onShowDetails(trip.id); }}>
-                        Show Trip Details
-                        <Styled.ArrowRightIcon className="white-hover"/>
-                    </Styled.Button>
-                </div>
+                <MainButton text="show trip details" onClick={(e) => { e.stopPropagation(); onShowDetails(trip.id); }} right="57%" width="40%" iconLeft={false}>
+                    <Styled.ArrowRightIcon/>
+                </MainButton>
             </div>
             <TripImage imageUrl={trip.imageUrl} tripId={trip.id}/>
         </Styled.Card>
@@ -79,29 +76,7 @@ const Styled = {
         fontFamily: fonts.normal,
         color: colors.normalText,
     }),
-    Button: styled(Button)({
-        color: colors.headingText,
-        textTransform: "lowercase",
-        padding: "0.2rem 0.4rem",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        "&::after": {
-            content: '""',
-            position: "absolute",
-            bottom: 0,
-            left: "4%",
-            width: "40%",
-            borderBottom: `0.125rem solid ${colors.mainBlue}`,
-        },
-        '&:hover': {
-            backgroundColor: colors.mainBlue,
-            color: colors.white,
-            "& .white-hover": {
-                color: colors.white,
-            },
-        },
-    }),
+
     ArrowRightIcon: styled(KeyboardArrowRightIcon)({
         marginLeft: "0.5rem",
     }),

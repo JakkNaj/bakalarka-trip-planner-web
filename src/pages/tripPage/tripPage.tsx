@@ -7,12 +7,12 @@ import { insertActivity } from "../../utils/activity_api.ts";
 import {ActivityType, InsertActivityType} from "../../types/activities/ActivitiesTypes.ts";
 import styled from "styled-components";
 import {colors} from "../../assets/colors.ts";
-import {fonts} from "../../assets/fonts.ts";
-import {Box, Button} from "@mui/material";
+import {Box} from "@mui/material";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import {TripPageHeader} from "./TripPageHeader.tsx";
 import {VerticalStepper} from "../../components/VerticalStepper.tsx";
 import { TripType } from '../../types/trip/TripType.ts';
+import { MainButton } from '../../components/MainButton.tsx';
 
 export const TripPage = () => {
     const navigate = useNavigate();
@@ -52,6 +52,11 @@ export const TripPage = () => {
          console.log('Edit trip with id:', id);
     }
 
+    const onAddActivity = () => {
+        //todo
+        console.log('Add activity');
+    }
+
     return (
         <Styled.PageContainer>
             <TripPageHeader
@@ -60,10 +65,9 @@ export const TripPage = () => {
             />
 
             <Styled.ButtonBox>
-                <Styled.Button>
-                    <Styled.AddPlusIcon className="white-plus"/>
-                    Add Activity
-                </Styled.Button>
+                <MainButton text="Add Activity" right="42%" width="30%" onClick={onAddActivity} backgroundColor={colors.headerGrey} padding="0.6rem 1rem">
+                    <Styled.AddPlusIcon/>
+                </MainButton>
             </Styled.ButtonBox>
 
             <button
@@ -102,28 +106,8 @@ const Styled = {
         justifyContent: "center",
         alignItems: "center",
     }),
-    Button: styled(Button)({
-        position: "absolute",
-        top: "50%",
-        transform: "translateY(-50%)",
-        fontFamily: fonts.normal,
-        textTransform: "lowercase",
-        backgroundColor: colors.backgroundGrey,
-        border: `0.0625rem solid ${colors.mainBlue}`,
-        color: colors.normalText,
-        borderRadius: "0.5rem",
-        padding: "0.6rem 1rem",
-        "&:hover": {
-            backgroundColor: colors.mainBlue,
-            color: colors.white,
-            "& .white-plus": {
-                color: colors.white,
-            },
-        },
-
-    }),
     AddPlusIcon: styled(LibraryAddIcon)({
         color: colors.mainBlue,
         marginRight: "0.6rem",
-    }),
+    }), 
 }

@@ -4,10 +4,10 @@ import { colors } from '../../assets/colors.ts';
 import { fonts } from '../../assets/fonts.ts';
 import { format } from 'date-fns';
 import { TripImage } from '../../components/TripImage.tsx';
-import { Button } from '@mui/material';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import {TripType} from "../../types/trip/TripType.ts";
+import { MainButton } from '../../components/MainButton.tsx';
 
 interface TripPageHeaderProps {
     trip: TripType;
@@ -21,13 +21,17 @@ export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
         return format(date, 'MMMM do yyyy');
     };
 
+    const handleEditTrip = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        onEditTrip(trip.id);
+    }
+
     return (
         <Styled.HeadingContainer>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", alignItems: "flex-start"}}>
-                <Styled.BackButton onClick={() => navigate('/')}>
+                <MainButton text="Back to trips" right="42%" width="30%" onClick={() => navigate('/')}>
                     <Styled.KeyboardBackspaceIcon className="white-backspace"/>
-                    Back to trips
-                </Styled.BackButton>
+                </MainButton>
                 <Styled.H2>Trip: {trip.title}</Styled.H2>
                 <Styled.Description>{trip.location}</Styled.Description>
                 <Styled.Dates>
@@ -48,10 +52,9 @@ export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
                         </>
                     )
                 }
-                <Styled.EditButton onClick={(e) => { e.stopPropagation(); onEditTrip(trip.id); }}>
+                <MainButton text="Edit" right="10%" width="40%" onClick={handleEditTrip}>
                     <Styled.EditIcon className="white-hover" />
-                    <p style={{margin: 0}}>Edit</p>
-                </Styled.EditButton>
+                </MainButton>
             </div>
 
             <TripImage
@@ -95,63 +98,9 @@ const Styled = {
         margin: 0,
         width: "100%"
     }),
-    BackButton: styled(Button)({
-        border: "none",
-        fontSize: "1rem",
-        textAlign: "center",
-        display: "flex",
-        alignItems: "center",
-        position: "relative",
-        color: colors.headingText,
-        textTransform: "lowercase",
-        fontFamily: fonts.normal,
-        transition: "background-color 0.4s, color 0.4s",
-        padding: "0.2rem 0.4rem",
-        "&::after": {
-            content: '""',
-            position: "absolute",
-            bottom: 0,
-            left: "25%",
-            width: "30%",
-            borderBottom: `0.125rem solid ${colors.mainBlue}`,
-        },
-        "&:hover": {
-            backgroundColor: colors.mainBlue,
-            color: colors.white,
-            "& .white-backspace": {
-                color: colors.white,
-            },
-        },
-    }),
     KeyboardBackspaceIcon: styled(KeyboardBackspaceIcon)({
         color: colors.mainBlue,
         marginRight: "0.6rem",
-    }),
-    EditButton: styled(Button)({
-        color: colors.headingText,
-        fontSize: "1rem",
-        textTransform: "lowercase",
-        marginTop: "0.4rem",
-        padding: "0.2rem 0.4rem",
-        display: "flex",
-        alignItems: "center",
-        width: "fit-content",
-        gap: "0.4rem",
-        '&:hover': {
-            backgroundColor: colors.mainBlue,
-            color: colors.white,
-            "& .white-hover": {
-                color: colors.white,
-            },
-        },
-        "&::after": {
-            content: '""',
-            position: "absolute",
-            bottom: 0,
-            right: "10%",
-            width: "40%",
-            borderBottom: `0.125rem solid ${colors.mainBlue}`,
-        },
     }),
     EditIcon: styled(EditNoteIcon)({
         cursor: 'pointer',

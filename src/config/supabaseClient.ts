@@ -5,4 +5,4 @@ const supabaseKey = import.meta.env.VITE_REACT_APP_ANON_KEY as string;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export default supabase;
+export default supabase; 

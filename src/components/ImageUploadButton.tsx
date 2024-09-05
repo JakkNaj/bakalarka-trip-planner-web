@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { colors } from "../assets/colors.ts";
 import UploadIcon from "@mui/icons-material/Upload";
 import { Button } from "@mui/material";
+import { MainButton } from './MainButton.tsx';
 
 interface ImageUploadButtonProps {
     tripId: number;
@@ -48,10 +49,9 @@ export const ImageUploadButton = ({ tripId }: ImageUploadButtonProps) => {
                     ref={fileInputRef}
                 />
                 {!uploading ? (
-                    <Styled.UploadButton type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                        <Styled.UploadIcon className="white-hover"/>
-                        Upload Image
-                    </Styled.UploadButton>
+                    <MainButton text="Upload Image" right="36%" width="44%" onClick={() => fileInputRef.current?.click()}>
+                        <Styled.UploadIcon />
+                    </MainButton>
                 ) : (
                     <CircularProgress size={24} style={{color: colors.mainBlue}} />
                 )}
