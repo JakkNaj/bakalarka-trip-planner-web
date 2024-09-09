@@ -20,7 +20,6 @@ export const TripPage = () => {
     const { insertActivityInsideTrip, addTrip } = useStore();
     const [showNewActivityForm, setShowNewActivityForm] = useState(false);
 
-    console.log("trip image url", trip.imageUrl);
     useEffect(() => {
         // set trip (from loader) in store
         addTrip(trip);
@@ -65,7 +64,7 @@ export const TripPage = () => {
             />
 
             <Styled.ButtonBox>
-                <MainButton text="Add Activity" right="42%" width="30%" onClick={onAddActivity} backgroundColor={colors.headerGrey} padding="0.6rem 1rem">
+                <MainButton text="Add Activity" right_after="42%" width_after="30%" onClick={onAddActivity} backgroundColor={colors.headerGrey} padding="0.6rem 1rem">
                     <Styled.AddPlusIcon/>
                 </MainButton>
             </Styled.ButtonBox>

@@ -6,7 +6,7 @@ interface globalStore extends userSlice, tripSlice {
     logoutAndReset: (navigate: (path: string) => void) => void;
 }
 
-export const useStore = create<globalStore>()((...a) => {
+const store = create<globalStore>()((...a) => {
     const userSlice = createUserSlice(...a);
     const tripSlice = createTripSlice(...a);
 
@@ -19,3 +19,7 @@ export const useStore = create<globalStore>()((...a) => {
         }
     };
 });
+// usage inside components and hooks
+export const useStore = store;
+// usage inside router loader functions (outside of react components)
+export const getState = store.getState;

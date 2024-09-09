@@ -2,6 +2,7 @@ import supabase from "../config/supabaseClient.ts";
 import { TripType, TripTypeSchema } from "../types/trip/TripType.ts";
 import { TripInsertType } from "../types/trip/TripInsertType.ts";
 import { fromZodError } from "zod-validation-error";
+import { getState } from "../stores/globalStore.ts";
 
 export const fetchTrips = async (): Promise<TripType[]> => {
     try {
@@ -27,9 +28,24 @@ export const fetchTrips = async (): Promise<TripType[]> => {
         if (!parsedData.success) {
             console.log('Error parsing data:', fromZodError(parsedData.error));
             return [];
-        } else {
-            return parsedData?.data;
-        }
+        } 
+        
+        const trips = parsedData.data;
+        const userId = getState().user?.id;
+        const updatedTrips = await Promise.all(trips.map(async(trip) => {
+            
+            if (!userId) {
+                return trip;
+            }
+            const imageUrl = await fetchTripImageUrl(trip.id, userId);
+            return {
+                ...trip,
+                imageUrl
+            };
+        }))
+
+        return updatedTrips;
+
     } catch (error) {
         console.error('Unexpected error during trip fetching:', error);
         return [];
@@ -41,6 +57,7 @@ export const fetchTrip = async (id: number): Promise<TripType | null> => {
             .from('trips')
             .select(`
                 id,
+                created_at,
                 title,
                 description,
                 date_start,
@@ -55,12 +72,28 @@ export const fetchTrip = async (id: number): Promise<TripType | null> => {
         console.error('Error fetching trip:', error.message);
         return null;
     }
-    return data as TripType;
+
+    const parsedData = TripTypeSchema.safeParse(data);
+    if (!parsedData.success) {
+        console.error('Error parsing trip data:', fromZodError(parsedData.error));
+        return null;
+    }
+
+    const trip = parsedData.data;
+    const userId = getState().user?.id;
+    const tripImage = await fetchTripImageUrl(trip.id, userId);
+    if (tripImage) {
+        return {
+            ...trip,
+            imageUrl: tripImage
+        };
+    }
+    return trip;
 };
 
-export const fetchTripImageUrl = async (tripId: number, userId: string | undefined): Promise<string | null> => {
+export const fetchTripImageUrl = async (tripId: number, userId: string | undefined): Promise<string | undefined> => {
     if (!userId) {
-        return null;
+        return undefined;
     }
     try {
         const filePath = `${userId}/${tripId}/trip-image.jpg`;
@@ -74,11 +107,11 @@ export const fetchTripImageUrl = async (tripId: number, userId: string | undefin
 
         if (listError) {
             console.error("Error listing files", listError.message);
-            return null;
+            return undefined;
         }
 
         if (!files || files.length === 0) {
-            return null;
+            return undefined;
         }
 
         const { data, error } = await supabase
@@ -88,14 +121,14 @@ export const fetchTripImageUrl = async (tripId: number, userId: string | undefin
 
         if (error) {
             console.error("Error fetching public URL", error.message);
-            return null;
+            return undefined;
         }
 
-        return data?.signedUrl || null;
+        return data?.signedUrl || undefined;
 
     } catch (error) {
         console.error("Unexpected error fetching image URL", error);
-        return null;
+        return undefined;
     }
 };
 

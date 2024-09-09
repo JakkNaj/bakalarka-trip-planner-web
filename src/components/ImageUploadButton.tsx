@@ -49,7 +49,7 @@ export const ImageUploadButton = ({ tripId }: ImageUploadButtonProps) => {
                     ref={fileInputRef}
                 />
                 {!uploading ? (
-                    <MainButton text="Upload Image" right="36%" width="44%" onClick={() => fileInputRef.current?.click()}>
+                    <MainButton text="Upload Image" right_after="36%" width_after="44%" onClick={() => fileInputRef.current?.click()}>
                         <Styled.UploadIcon />
                     </MainButton>
                 ) : (

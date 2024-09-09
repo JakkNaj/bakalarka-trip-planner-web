@@ -28,7 +28,7 @@ export const HomePage = () => {
                     <Styled.H1>Your Upcoming Trips</Styled.H1> :
                     <Styled.H1>Your Past Trips</Styled.H1>
                 }
-                <MainButton text="Add new Trip" right="4%" width="48%" onClick={() => setShowForm(true)} >
+                <MainButton text="Add new Trip" right_after="4%" width_after="48%" onClick={() => setShowForm(true)} >
                     <Styled.KeyboardBackspaceIcon />
                 </MainButton>
             </Styled.HeadingContainer>

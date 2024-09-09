@@ -5,8 +5,8 @@ import React from "react";
 
 interface ButtonProps {
   text: string;
-  right: string;
-  width: string;
+  right_after: string;
+  width_after: string;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   children?: React.ReactNode;
   backgroundColor?: string;
@@ -14,9 +14,9 @@ interface ButtonProps {
   iconLeft?: boolean;
 }
 
-export const MainButton = ({ text, right, width, onClick, children, backgroundColor, padding, iconLeft = true } : ButtonProps) => {
+export const MainButton = ({ text, right_after, width_after, onClick, children, backgroundColor, padding, iconLeft = true } : ButtonProps) => {
   return (
-    <StyledButton right={right} width={width} onClick={onClick} backgroundColor={backgroundColor} padding={padding}>
+    <StyledButton $right_after={right_after} $width_after={width_after} onClick={onClick} $backgroundColor={backgroundColor} $padding={padding}>
       {iconLeft && React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child as React.ReactElement, { className: "white-backspace" });
@@ -34,7 +34,7 @@ export const MainButton = ({ text, right, width, onClick, children, backgroundCo
   );
 }
 
-const StyledButton = styled.button<{ right: string; width: string, backgroundColor?: string, padding?: string }>`
+const StyledButton = styled.button<{ $right_after: string; $width_after: string, $backgroundColor?: string, $padding?: string }>`
   border: none;
   font-size: 1rem;
   text-align: center;
@@ -45,16 +45,16 @@ const StyledButton = styled.button<{ right: string; width: string, backgroundCol
   text-transform: lowercase;
   font-family: ${fonts.normal};
   transition: background-color 0.4s, color 0.4s;
-  padding: ${(props) => props.padding || "0.4rem"};
+  padding: ${(props) => props.$padding || "0.4rem"};
   border-radius: 0.25rem;
-  background-color: ${(props) => props.backgroundColor || "none"};
+  background-color: ${(props) => props.$backgroundColor || "none"};
 
   &::after {
     content: '';
     position: absolute;
     bottom: 0;
-    right: ${(props) => props.right};
-    width: ${(props) => props.width};
+    right: ${(props) => props.$right_after};
+    width: ${(props) => props.$width_after};
     border-bottom: 0.125rem solid ${colors.mainBlue};
   }
 

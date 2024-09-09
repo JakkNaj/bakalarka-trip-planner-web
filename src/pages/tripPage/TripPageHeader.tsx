@@ -29,7 +29,7 @@ export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
     return (
         <Styled.HeadingContainer>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", alignItems: "flex-start"}}>
-                <MainButton text="Back to trips" right="42%" width="30%" onClick={() => navigate('/')}>
+                <MainButton text="Back to trips" right_after="42%" width_after="30%" onClick={() => navigate('/')}>
                     <Styled.KeyboardBackspaceIcon className="white-backspace"/>
                 </MainButton>
                 <Styled.H2>Trip: {trip.title}</Styled.H2>
@@ -52,7 +52,7 @@ export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
                         </>
                     )
                 }
-                <MainButton text="Edit" right="10%" width="40%" onClick={handleEditTrip}>
+                <MainButton text="Edit" right_after="10%" width_after="40%" onClick={handleEditTrip}>
                     <Styled.EditIcon className="white-hover" />
                 </MainButton>
             </div>

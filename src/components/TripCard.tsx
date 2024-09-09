@@ -30,7 +30,7 @@ export const TripCard = ({ trip, onShowDetails } : TripCardProps) => {
                 </Styled.Header>
                 <Styled.Location>{trip.location}</Styled.Location>
                 <Styled.Dates>{trip.date_start.toLocaleString()} - {trip.date_end.toLocaleString()}</Styled.Dates>
-                <MainButton text="show trip details" onClick={(e) => { e.stopPropagation(); onShowDetails(trip.id); }} right="57%" width="40%" iconLeft={false}>
+                <MainButton text="show trip details" onClick={(e) => { e.stopPropagation(); onShowDetails(trip.id); }} right_after="57%" width_after="40%" iconLeft={false}>
                     <Styled.ArrowRightIcon/>
                 </MainButton>
             </div>
