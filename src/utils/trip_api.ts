@@ -1,6 +1,6 @@
 import supabase from "../config/supabaseClient.ts";
 import { TripType, TripTypeSchema } from "../types/trip/TripType.ts";
-import { TripInsertType } from "../types/trip/TripInsertType.ts";
+import { TripEditType, TripInsertType } from "../types/trip/TripInsertType.ts";
 import { fromZodError } from "zod-validation-error";
 import { getState } from "../stores/globalStore.ts";
 
@@ -180,6 +180,20 @@ export const insertTrip = async (trip: TripInsertType) => {
     const { data, error } = await supabase
         .from('trips')
         .insert([trip])
+        .select('*')
+        .single();
+
+    if (error || !data) {
+        throw new Error(error?.message);
+    }
+    return data;
+};
+
+export const updateTrip = async (trip: TripEditType) => {
+    const { data, error } = await supabase
+        .from('trips')
+        .update(trip)
+        .eq('id', trip.id)
         .select('*')
         .single();
 

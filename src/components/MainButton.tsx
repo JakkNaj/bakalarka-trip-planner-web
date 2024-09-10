@@ -7,16 +7,24 @@ interface ButtonProps {
   text: string;
   right_after: string;
   width_after: string;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   children?: React.ReactNode;
   backgroundColor?: string;
   padding?: string;
   iconLeft?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
-export const MainButton = ({ text, right_after, width_after, onClick, children, backgroundColor, padding, iconLeft = true } : ButtonProps) => {
+export const MainButton = ({ text, right_after, width_after, onClick, children, backgroundColor, padding, iconLeft = true, type = "button" } : ButtonProps) => {
   return (
-    <StyledButton $right_after={right_after} $width_after={width_after} onClick={onClick} $backgroundColor={backgroundColor} $padding={padding}>
+    <StyledButton
+      $right_after={right_after}
+      $width_after={width_after}
+      onClick={onClick} 
+      $backgroundColor={backgroundColor} 
+      $padding={padding}
+      type={type}
+    >
       {iconLeft && React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child as React.ReactElement, { className: "white-backspace" });
@@ -48,6 +56,7 @@ const StyledButton = styled.button<{ $right_after: string; $width_after: string,
   padding: ${(props) => props.$padding || "0.4rem"};
   border-radius: 0.25rem;
   background-color: ${(props) => props.$backgroundColor || "none"};
+  cursor: pointer;
 
   &::after {
     content: '';

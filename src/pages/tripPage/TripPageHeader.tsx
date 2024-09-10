@@ -8,14 +8,23 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import {TripType} from "../../types/trip/TripType.ts";
 import { MainButton } from '../../components/MainButton.tsx';
-
+import { useState } from 'react';
+import { TripForm } from '../../components/TripForm.tsx';
+import { useStore } from '../../stores/globalStore.ts';
+import { TripInsertType } from '../../types/trip/TripInsertType.ts';
 interface TripPageHeaderProps {
     trip: TripType;
-    onEditTrip: (id: number) => void;
+    handleFormSubmit: (updatedTrip: TripInsertType) => void;
 }
 
-export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
+export const TripPageHeader = ({ trip, handleFormSubmit }: TripPageHeaderProps) => {
     const navigate = useNavigate();
+    const { user } = useStore();
+    const [isEditing, setIsEditing] = useState(false);
+
+    if (!user) {
+        return null;
+    }
 
     const formatDate = (date: Date) => {
         return format(date, 'MMMM do yyyy');
@@ -23,12 +32,24 @@ export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
 
     const handleEditTrip = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onEditTrip(trip.id);
+        setIsEditing(true);
+    }
+
+    const onFormSubmit = (newTrip: TripInsertType) => {
+        handleFormSubmit(newTrip);
+        setIsEditing(false);
     }
 
     return (
         <Styled.HeadingContainer>
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", alignItems: "flex-start"}}>
+            {isEditing ? (
+                <TripForm
+                    onClose={() => setIsEditing(false)}
+                    onSubmit={onFormSubmit}
+                    formData={{...trip, user_id: user.id}}
+                />
+            ) : (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", alignItems: "flex-start"}}>
                 <MainButton text="Back to trips" right_after="42%" width_after="30%" onClick={() => navigate('/')}>
                     <Styled.KeyboardBackspaceIcon className="white-backspace"/>
                 </MainButton>
@@ -56,12 +77,12 @@ export const TripPageHeader = ({ trip, onEditTrip }: TripPageHeaderProps) => {
                     <Styled.EditIcon className="white-hover" />
                 </MainButton>
             </div>
-
+            )}
             <TripImage
-                tripId={trip.id}
-                imageUrl={trip.imageUrl}
-                showUploadButton={true}
-            />
+                    tripId={trip.id}
+                    imageUrl={trip.imageUrl}
+                    showUploadButton={true}
+                />
         </Styled.HeadingContainer>
     );
 };
@@ -96,7 +117,7 @@ const Styled = {
         color: colors.normalText,
         borderRadius: '0.4rem',
         margin: 0,
-        width: "100%"
+        width: "100%",
     }),
     KeyboardBackspaceIcon: styled(KeyboardBackspaceIcon)({
         color: colors.mainBlue,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../stores/globalStore.ts";
 import { TripsDisplay } from "../components/TripsDisplay.tsx";
-import { NewTripForm } from "../components/NewTripForm.tsx";
+import { TripForm } from "../components/TripForm.tsx";
 import { OrderByTypes } from "../types/orderByTypes.ts";
 import styled from "styled-components";
 import { fonts } from "../assets/fonts.ts";
@@ -10,16 +10,31 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useLoaderData } from "react-router-dom";
 import { TripType } from "../types/trip/TripType.ts";
 import { MainButton } from "../components/MainButton.tsx";
+import { TripInsertType } from "../types/trip/TripInsertType.ts";
+import { insertTrip } from "../utils/trip_api.ts";
 
 export const HomePage = () => {
     const [showForm, setShowForm] = useState(false);
-    const { orderTripsBy, setTrips } = useStore();
-    const trips = useLoaderData() as TripType[];
+    const { orderTripsBy, setTrips, addTrip } = useStore();
+    const loadedTrips = useLoaderData() as TripType[];
+    const [formError, setFormError] = useState<string | null>(null);
 
     useEffect(() => {
         //set trips (from loader) in the store
-        setTrips(trips);
-    }, [trips, setTrips]);
+        setTrips(loadedTrips);
+    }, [loadedTrips, setTrips]);
+
+    const handleSubmit = async (newTrip: TripInsertType) => {
+        try {
+            const insertedTrip = await insertTrip(newTrip);
+            console.log('Trip created:', insertedTrip);
+            addTrip(insertedTrip);
+        } catch (e : unknown) {
+            const error = e as Error;
+            console.error('Error creating trip:', error.message);
+            setFormError('Failed to create trip. Please try again later.');
+        }
+    };
 
     return (
         <Styled.PageContainer>
@@ -33,8 +48,13 @@ export const HomePage = () => {
                 </MainButton>
             </Styled.HeadingContainer>
             <Styled.ContentContainer>
-                {showForm && <NewTripForm onClose={() => setShowForm(false)} />}
-                <TripsDisplay trips={trips} />
+                {showForm &&
+                     <TripForm 
+                        onClose={() => setShowForm(false)}
+                        onSubmit={handleSubmit}
+                        formError={formError}
+                    />}
+                <TripsDisplay />
             </Styled.ContentContainer>
         </Styled.PageContainer>
     );

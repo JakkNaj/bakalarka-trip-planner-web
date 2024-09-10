@@ -10,3 +10,10 @@ export const TripInsertTypeSchema = TripTypeSchema.omit({
 });
 
 export type TripInsertType = z.infer<typeof TripInsertTypeSchema>;
+
+export const TripEditTypeSchema = TripTypeSchema.omit({
+    created_at: true,
+    trip_activities: true,
+});
+
+export type TripEditType = z.infer<typeof TripEditTypeSchema>;

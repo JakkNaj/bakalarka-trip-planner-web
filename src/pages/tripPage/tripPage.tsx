@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { Activity } from '../../components/Activity.tsx';
+import { useLoaderData } from 'react-router-dom';
 import { useStore } from '../../stores/globalStore.ts';
 import { NewActivityForm } from '../../components/NewActivityForm.tsx';
 import { insertActivity } from "../../utils/activity_api.ts";
@@ -13,56 +12,60 @@ import {TripPageHeader} from "./TripPageHeader.tsx";
 import {VerticalStepper} from "../../components/VerticalStepper.tsx";
 import { TripType } from '../../types/trip/TripType.ts';
 import { MainButton } from '../../components/MainButton.tsx';
+import { TripEditTypeSchema, TripInsertType } from '../../types/trip/TripInsertType.ts';
+import { updateTrip } from '../../utils/trip_api.ts';
 
 export const TripPage = () => {
-    const navigate = useNavigate();
-    const trip = useLoaderData() as TripType;
-    const { insertActivityInsideTrip, addTrip } = useStore();
+    const loadedTrip = useLoaderData() as TripType;
+    const { insertActivityInsideTrip, addTrip, getTripById, updateTrip: updateTripStore } = useStore();
     const [showNewActivityForm, setShowNewActivityForm] = useState(false);
-
+    const [currentTrip, setCurrentTrip] = useState<TripType | null>(null);
+    
     useEffect(() => {
         // set trip (from loader) in store
-        addTrip(trip);
-    }, [addTrip, trip]);
+        addTrip(loadedTrip);
+        setCurrentTrip(loadedTrip);
+    }, [addTrip, loadedTrip]);
 
-    const navigateToEditActivity = (activityId: number) => {
-        navigate(`/trip/${trip.id}/activity/${activityId}`);
-    };
+    useEffect(() => {
+        const trip = getTripById(loadedTrip.id);
+        if (trip) {
+            setCurrentTrip(trip);
+        }
+    }, [getTripById, loadedTrip]);
 
     const handleAddActivity = async (newActivity: InsertActivityType) => {
         // todo add loading state
         //insert into db
         const insertedActivity = await insertActivity(newActivity);
         //update store
-        insertActivityInsideTrip(insertedActivity as ActivityType, trip.id);
+        insertActivityInsideTrip(insertedActivity as ActivityType, loadedTrip.id);
     };
 
-    const ShowActivities = () => {
-        if (!trip.trip_activities || trip.trip_activities.length === 0) {
-            return <p>No activities planned yet.</p>;
+    const handleNewTripSubmit = async (updatedTrip: TripInsertType) => {
+        const mergedTrip = {
+            ...updatedTrip,
+            id: loadedTrip.id,
+        };
+        if (TripEditTypeSchema.safeParse(mergedTrip)) {
+            const updatedTrip = await updateTrip(mergedTrip);
+            setCurrentTrip(updatedTrip);
+            updateTripStore(updatedTrip);
         }
-        return trip.trip_activities.map((activity) => (
-            <Activity key={activity.activity_id} activity={activity} navigateToEditActivity={navigateToEditActivity} />
-        ));
     };
-
-    const onEditTrip = (id: number) => {
-        //todo
-         console.log('Edit trip with id:', id);
-    }
 
     const onAddActivity = () => {
         //todo
         console.log('Add activity');
+    };
+
+    if (currentTrip === null) {
+        return <p>Loading...</p>;
     }
 
     return (
         <Styled.PageContainer>
-            <TripPageHeader
-                trip={trip}
-                onEditTrip={onEditTrip}
-            />
-
+            <TripPageHeader trip={currentTrip} handleFormSubmit={handleNewTripSubmit}/>
             <Styled.ButtonBox>
                 <MainButton text="Add Activity" right_after="42%" width_after="30%" onClick={onAddActivity} backgroundColor={colors.headerGrey} padding="0.6rem 1rem">
                     <Styled.AddPlusIcon/>
@@ -77,13 +80,13 @@ export const TripPage = () => {
             </button>
             {showNewActivityForm && (
                 <NewActivityForm
-                    tripId={trip.id}
+                    tripId={loadedTrip.id}
                     onClose={() => setShowNewActivityForm(false)}
                     onSubmit={handleAddActivity}
                 />
             )}
-            {trip.trip_activities && trip.trip_activities.length > 0 ? (
-                <VerticalStepper activities={trip.trip_activities} />
+            {loadedTrip.trip_activities && loadedTrip.trip_activities.length > 0 ? (
+                <VerticalStepper activities={loadedTrip.trip_activities} />
             ) : (
                 <p>No activities planned yet.</p>
             )}

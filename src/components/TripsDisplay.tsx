@@ -4,15 +4,10 @@ import { OrderByTypes } from "../types/orderByTypes.ts";
 import styled from "styled-components";
 import {fonts} from "../assets/fonts.ts";
 import {TripCard} from "./TripCard.tsx";
-import { TripType } from "../types/trip/TripType.ts";
 
-interface TripsDisplayProps {
-    trips: TripType[];
-}
-
-export const TripsDisplay = ({trips}: TripsDisplayProps) => {
+export const TripsDisplay = () => {
     const navigate = useNavigate();
-    const { orderTripsBy } = useStore();
+    const { orderTripsBy, trips } = useStore();
 
     const filteredTrips = trips.filter((trip) => {
         if (orderTripsBy === OrderByTypes.UPCOMING) {

@@ -1,69 +1,58 @@
 import { useState } from 'react';
-import { insertTrip } from "../utils/trip_api.ts";
 import { useStore } from "../stores/globalStore.ts";
 import styled from "styled-components";
 import { FormControl, TextField, Button, Typography } from '@mui/material';
 import {fonts} from "../assets/fonts.ts";
 import {colors} from "../assets/colors.ts";
+import { MainButton } from './MainButton.tsx';
+import AddIcon from '@mui/icons-material/Add';
+import { TripInsertType, TripInsertTypeSchema } from '../types/trip/TripInsertType.ts';
+import { format } from 'date-fns';
 
-type NewTripFormProps = {
-    onClose: () => void;
+type TripFormProps = {
+    onClose: () => void,
+    onSubmit: (newTrip: TripInsertType) => void,
+    formError?: string | null,
+    formData?: TripInsertType,
 };
 
-export const NewTripForm = ({ onClose }: NewTripFormProps) => {
-    const { user, addTrip } = useStore();
-    const [title, setTitle] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
-    const [dateStart, setDateStart] = useState<string>(new Date().toISOString().slice(0, 10));
-    const [dateEnd, setDateEnd] = useState<string>(new Date().toISOString().slice(0, 10));
-    const [location, setLocation] = useState<string>("");
-    const [error, setError] = useState<string | null>(null);
+export const TripForm = ({ onClose, onSubmit, formError, formData }: TripFormProps) => {
+    const { user } = useStore();
+    const [title, setTitle] = useState<string>(formData?.title || "");
+    const [description, setDescription] = useState<string>(formData?.description || "");
+    const [dateStart, setDateStart] = useState<string>(formData ? format(new Date(formData.date_start), 'yyyy-MM-dd') : new Date().toISOString().slice(0, 10));
+    const [dateEnd, setDateEnd] = useState<string>(formData ? format(new Date(formData.date_end), 'yyyy-MM-dd') : new Date().toISOString().slice(0, 10));
+    const [location, setLocation] = useState<string>(formData?.location || "");
 
     if (!user) {
         return <Typography>Please log in to create a new trip.</Typography>;
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            const newTrip = {
-                title,
-                description,
-                date_start: new Date(dateStart),
-                date_end: new Date(dateEnd),
-                user_id: user.id,
-                location: location,
-            };
-
-            const insertedTrip = await insertTrip(newTrip);
-            console.log('Trip created:', insertedTrip);
-            addTrip(insertedTrip);
-        } catch (e : unknown) {
-            const error = e as Error;
-            console.error('Error creating trip:', error.message);
-            setError('Failed to create trip. Please try again later.');
+        const newTrip = {
+            title,
+            description,
+            date_start: new Date(dateStart),
+            date_end: new Date(dateEnd),
+            user_id: user.id,
+            location: location,
+        };
+        if (TripInsertTypeSchema.safeParse(newTrip)){
+            onSubmit(newTrip);
+            onClose();
         }
-
-        onClose();
-    };
+    }
 
     return (
         <Styled.Form onSubmit={handleSubmit}>
-            {error && <Typography color="error">{error}</Typography>}
+            {formError && <Typography color="error">{formError}</Typography>}
             <div>
                 <FormControl fullWidth margin="none">
                     <Styled.TextField
                         label="Title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <Styled.TextField
-                        label="Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
                         required
                     />
                 </FormControl>
@@ -95,8 +84,23 @@ export const NewTripForm = ({ onClose }: NewTripFormProps) => {
                         required
                     />
                 </FormControl>
-                <Button type="submit" variant="contained" color="primary">Create Trip</Button>
-                <Button type="button" onClick={onClose} variant="outlined" color="secondary">Close</Button>
+                <FormControl fullWidth margin="normal">
+                    <Styled.TextField
+                        label="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        multiline
+                        minRows={4}
+                        maxRows={20}
+                        required
+                    />
+                </FormControl>
+                <div style={{display: "flex", gap: "1rem", marginTop: "0.4rem"}}>
+                    <MainButton text='Create trip' right_after='26%' width_after='50%' type="submit">
+                        <Styled.PlusIcon />
+                    </MainButton>
+                    <MainButton text='close' right_after='5%' width_after='90%' onClick={onClose}/>
+                </div>
             </div>
         </Styled.Form>
     );
@@ -104,7 +108,6 @@ export const NewTripForm = ({ onClose }: NewTripFormProps) => {
 
 const Styled = {
     Form: styled.form({
-        marginLeft: "2rem",
         display: "flex",
         flexDirection: "row",
         alignItems: "flex-start",
@@ -122,6 +125,12 @@ const Styled = {
         },
         '& .MuiOutlinedInput-root': {
             borderRadius: '0.4rem',
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: colors.mainBlue,
+            },
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+            color: colors.mainBlue,
         },
     }),
     AddTripButton: styled(Button)({
@@ -151,5 +160,9 @@ const Styled = {
                 color: colors.white,
             },
         },
+    }),
+    PlusIcon: styled(AddIcon)({
+        color: colors.mainBlue,
+        marginRight: "0.4rem",
     }),
 };
