@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { useStore } from '../../stores/globalStore.ts';
 import { NewActivityForm } from '../../components/NewActivityForm.tsx';
 import { insertActivity } from "../../utils/activity_api.ts";
-import {ActivityType, InsertActivityType} from "../../types/activities/ActivitiesTypes.ts";
+import {ActivityType, FormActivityDetailsType} from "../../types/activities/ActivitiesTypes.ts";
 import styled from "styled-components";
 import {colors} from "../../assets/colors.ts";
 import {Box} from "@mui/material";
@@ -14,6 +14,7 @@ import { TripType } from '../../types/trip/TripType.ts';
 import { MainButton } from '../../components/MainButton.tsx';
 import { TripEditTypeSchema, TripInsertType } from '../../types/trip/TripInsertType.ts';
 import { updateTrip } from '../../utils/trip_api.ts';
+import { InsertBaseActivityType } from '../../types/activities/BaseActivityTypes.ts';
 
 export const TripPage = () => {
     const loadedTrip = useLoaderData() as TripType;
@@ -34,15 +35,17 @@ export const TripPage = () => {
         }
     }, [getTripById, loadedTrip]);
 
-    const handleAddActivity = async (newActivity: InsertActivityType) => {
+    const handleAddActivity = useCallback( async (baseDetails: InsertBaseActivityType, typeDetails: FormActivityDetailsType) => {
         // todo add loading state
-        //insert into db
-        const insertedActivity = await insertActivity(newActivity);
-        //update store
+        const insertedActivity = await insertActivity(baseDetails, typeDetails);
         insertActivityInsideTrip(insertedActivity as ActivityType, loadedTrip.id);
-    };
+        const currTrip = getTripById(loadedTrip.id);
+        if (currTrip) {
+            setCurrentTrip(currTrip);
+        }
+    }, [insertActivityInsideTrip, loadedTrip, getTripById]);
 
-    const handleNewTripSubmit = async (updatedTrip: TripInsertType) => {
+    const handleNewTripSubmit = useCallback(async (updatedTrip: TripInsertType) => {
         const mergedTrip = {
             ...updatedTrip,
             id: loadedTrip.id,
@@ -52,7 +55,7 @@ export const TripPage = () => {
             setCurrentTrip(updatedTrip);
             updateTripStore(updatedTrip);
         }
-    };
+    }, [updateTripStore, loadedTrip]);
 
     const onAddActivity = () => {
         //todo
@@ -63,6 +66,7 @@ export const TripPage = () => {
         return <p>Loading...</p>;
     }
 
+    console.log('currentTrip', currentTrip);
     return (
         <Styled.PageContainer>
             <TripPageHeader trip={currentTrip} handleFormSubmit={handleNewTripSubmit}/>
@@ -85,8 +89,8 @@ export const TripPage = () => {
                     onSubmit={handleAddActivity}
                 />
             )}
-            {loadedTrip.trip_activities && loadedTrip.trip_activities.length > 0 ? (
-                <VerticalStepper activities={loadedTrip.trip_activities} />
+            {currentTrip.trip_activities && currentTrip.trip_activities.length > 0 ? (
+                <VerticalStepper activities={currentTrip.trip_activities} />
             ) : (
                 <p>No activities planned yet.</p>
             )}

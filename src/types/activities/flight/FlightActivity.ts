@@ -23,4 +23,8 @@ export const FlightActivitySchema = BaseActivityTypeSchema.extend({
 export type FlightActivity = z.infer<typeof FlightActivitySchema>;
 
 // --------------- Insert Types ---------------
-export type InsertFlightType = Omit<FlightType, 'id' | 'activity_id'>;
+export type InsertFlightType = Omit<FlightType, 'id'>;
+
+// --------------- Form Types ---------------
+export const FormFlightTypeSchema = FlightTypeSchema.omit({ id: true, activity_id: true });
+export type FormFlightType = Omit<FlightType, 'id' | 'activity_id'>;

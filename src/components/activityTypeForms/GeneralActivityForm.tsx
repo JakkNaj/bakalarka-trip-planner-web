@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { InsertGeneralType } from '../../types/activities/general/GeneralActivity';
+import { FormGeneralType } from '../../types/activities/general/GeneralActivity';
 
 type GeneralActivityFormProps = {
-    setDetails: (details: InsertGeneralType) => void;
+    setDetails: (details: FormGeneralType) => void;
 };
 
 export const GeneralActivityForm = ({ setDetails } : GeneralActivityFormProps) => {

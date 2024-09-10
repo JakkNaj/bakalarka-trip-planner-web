@@ -47,36 +47,37 @@ export const TripPageHeader = ({ trip, handleFormSubmit }: TripPageHeaderProps) 
                     onClose={() => setIsEditing(false)}
                     onSubmit={onFormSubmit}
                     formData={{...trip, user_id: user.id}}
+                    submitBtnText='Update Trip'
                 />
             ) : (
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", alignItems: "flex-start"}}>
-                <MainButton text="Back to trips" right_after="42%" width_after="30%" onClick={() => navigate('/')}>
-                    <Styled.KeyboardBackspaceIcon className="white-backspace"/>
-                </MainButton>
-                <Styled.H2>Trip: {trip.title}</Styled.H2>
-                <Styled.Description>{trip.location}</Styled.Description>
-                <Styled.Dates>
-                    <h4 style={{margin: 0}}>from: </h4 >
-                    <Styled.Description style={{margin: 0}}>{formatDate(new Date(trip.date_start))}</Styled.Description>
-                </Styled.Dates>
-                <Styled.Dates>
-                    <h4 style={{margin: 0}}>until: </h4>
-                    <Styled.Description style={{margin: 0}}>{formatDate(new Date(trip.date_end))}</Styled.Description>
-                </Styled.Dates>
-                {trip?.description && trip.description.length != 0 &&
-                    (
-                        <>
-                            <h4 style={{marginTop: 0, marginBottom: "0.4rem", fontFamily: fonts.normal}}>Description</h4>
-                            <Styled.Description>
-                                {trip.description}
-                            </Styled.Description>
-                        </>
-                    )
-                }
-                <MainButton text="Edit" right_after="10%" width_after="40%" onClick={handleEditTrip}>
-                    <Styled.EditIcon className="white-hover" />
-                </MainButton>
-            </div>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%",gap: "0.8rem" , alignItems: "flex-start"}}>
+                    <MainButton text="Back to trips" right_after="42%" width_after="30%" onClick={() => navigate('/')}>
+                        <Styled.KeyboardBackspaceIcon className="white-backspace"/>
+                    </MainButton>
+                    <Styled.H2>Trip: {trip.title}</Styled.H2>
+                    <Styled.Description>{trip.location}</Styled.Description>
+                    <Styled.Dates>
+                        <h4 style={{margin: 0}}>from: </h4 >
+                        <Styled.Description style={{margin: 0}}>{formatDate(new Date(trip.date_start))}</Styled.Description>
+                    </Styled.Dates>
+                    <Styled.Dates>
+                        <h4 style={{margin: 0}}>until: </h4>
+                        <Styled.Description style={{margin: 0}}>{formatDate(new Date(trip.date_end))}</Styled.Description>
+                    </Styled.Dates>
+                    {trip?.description && trip.description.length != 0 &&
+                        (
+                            <>
+                                <h4 style={{marginTop: 0, marginBottom: "0.4rem", fontFamily: fonts.normal}}>Description</h4>
+                                <Styled.Description>
+                                    {trip.description}
+                                </Styled.Description>
+                            </>
+                        )
+                    }
+                    <MainButton text="Edit" right_after="10%" width_after="40%" onClick={handleEditTrip}>
+                        <Styled.EditIcon className="white-hover" />
+                    </MainButton>
+                </div>
             )}
             <TripImage
                     tripId={trip.id}
@@ -100,12 +101,12 @@ const Styled = {
     H2: styled.h2({
         fontFamily: fonts.heading,
         color: colors.mainBlue,
-        marginBottom: 0,
+        margin: 0,
     }),
     Dates: styled.div({
         fontFamily: fonts.title,
         color: colors.normalText,
-        margin: "0.8rem 0",
+        margin: 0,
         textAlign: "start",
         display: "flex",
         alignItems: "center",

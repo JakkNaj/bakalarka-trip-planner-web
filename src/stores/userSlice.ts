@@ -1,4 +1,4 @@
-import { fetchUserData, signInWithGoogle, signOutUser, tryToAuthUser } from '../utils/user_api.ts';
+import { fetchUserData, signInWithGoogle, tryToAuthUser } from '../utils/user_api.ts';
 import { UserType } from '../types/user/UserType.ts';
 import { UserResponseType } from "../types/user/UserMetadaResponse.ts";
 import { StateCreator } from 'zustand';
@@ -8,7 +8,6 @@ import { StateCreator } from 'zustand';
     setUser: (user: UserType) => void;
     fetchUserData: () => Promise<boolean>;
     login: () => Promise<void>;
-    logout: (navigate: (path: string) => void) => Promise<void>;
 }
 
 export const createUserSlice: StateCreator<userSlice, [], [], userSlice> = (set) => {
@@ -44,11 +43,6 @@ export const createUserSlice: StateCreator<userSlice, [], [], userSlice> = (set)
             await signInWithGoogle();
         },
 
-        logout: async (navigate) => {
-            await signOutUser();
-            set({ user: null });
-            navigate('/login');
-        },
     };
 };
 

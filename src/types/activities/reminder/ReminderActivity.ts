@@ -19,4 +19,8 @@ export const ReminderActivitySchema = BaseActivityTypeSchema.extend({
 export type ReminderActivity = z.infer<typeof ReminderActivitySchema>;
 
 // --------------- Insert Types ---------------
-export type InsertReminderType = Omit<ReminderType, 'id' | 'activity_id'>;
+export type InsertReminderType = Omit<ReminderType, 'id'>;
+
+// --------------- Form Types ---------------
+export const FormReminderTypeSchema = ReminderTypeSchema.omit({ id: true, activity_id: true });
+export type FormReminderType = Omit<ReminderType, 'id' | 'activity_id'>;

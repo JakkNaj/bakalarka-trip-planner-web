@@ -14,9 +14,10 @@ type TripFormProps = {
     onSubmit: (newTrip: TripInsertType) => void,
     formError?: string | null,
     formData?: TripInsertType,
+    submitBtnText: string,
 };
 
-export const TripForm = ({ onClose, onSubmit, formError, formData }: TripFormProps) => {
+export const TripForm = ({ onClose, onSubmit, formError, formData, submitBtnText }: TripFormProps) => {
     const { user } = useStore();
     const [title, setTitle] = useState<string>(formData?.title || "");
     const [description, setDescription] = useState<string>(formData?.description || "");
@@ -96,7 +97,7 @@ export const TripForm = ({ onClose, onSubmit, formError, formData }: TripFormPro
                     />
                 </FormControl>
                 <div style={{display: "flex", gap: "1rem", marginTop: "0.4rem"}}>
-                    <MainButton text='Create trip' right_after='26%' width_after='50%' type="submit">
+                    <MainButton text={submitBtnText} right_after='26%' width_after='46%' type="submit">
                         <Styled.PlusIcon />
                     </MainButton>
                     <MainButton text='close' right_after='5%' width_after='90%' onClick={onClose}/>

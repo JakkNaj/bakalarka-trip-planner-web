@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { InsertReminderType } from '../../types/activities/reminder/ReminderActivity';
+import { FormReminderType } from '../../types/activities/reminder/ReminderActivity';
 
 type ReminderActivityFormProps = {
-    setDetails: (details: InsertReminderType) => void;
+    setDetails: (details: FormReminderType) => void;
 };
 
 export const ReminderActivityForm = ({ setDetails }: ReminderActivityFormProps) => {

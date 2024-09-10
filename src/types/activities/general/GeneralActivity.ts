@@ -19,4 +19,8 @@ export const GeneralActivitySchema = BaseActivityTypeSchema.extend({
 export type GeneralActivity = z.infer<typeof GeneralActivitySchema>;
 
 // --------------- Insert Types ---------------
-export type InsertGeneralType = Omit<GeneralType, 'id' | 'activity_id'>;
+export type InsertGeneralType = Omit<GeneralType, 'id'>;
+
+// --------------- Form Types ---------------
+export const FormGeneralTypeSchema = GeneralTypeSchema.omit({ id: true, activity_id: true });
+export type FormGeneralType = Omit<GeneralType, 'id' | 'activity_id'>;

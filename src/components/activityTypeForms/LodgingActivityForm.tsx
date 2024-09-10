@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { InsertLodgingType } from '../../types/activities/lodging/LodgingActivity';
+import { FormLodgingType } from '../../types/activities/lodging/LodgingActivity';
 
 type LodgingActivityFormProps = {
-    setDetails: (details: InsertLodgingType) => void;
+    setDetails: (details: FormLodgingType) => void;
 };
 
 export const LodgingActivityForm = ({ setDetails } : LodgingActivityFormProps) => {

@@ -4,19 +4,22 @@ import { OrderByTypes } from "../types/orderByTypes.ts";
 import styled from "styled-components";
 import {fonts} from "../assets/fonts.ts";
 import {TripCard} from "./TripCard.tsx";
+import { useMemo } from "react";
 
 export const TripsDisplay = () => {
     const navigate = useNavigate();
     const { orderTripsBy, trips } = useStore();
 
-    const filteredTrips = trips.filter((trip) => {
-        if (orderTripsBy === OrderByTypes.UPCOMING) {
-            return new Date(trip.date_start) >= new Date();
-        } else if (orderTripsBy === OrderByTypes.PAST) {
-            return new Date(trip.date_end) < new Date();
-        }
-        return true;
-    });
+    const filteredTrips = useMemo(() => {
+        return trips.filter((trip) => {
+            if (orderTripsBy === OrderByTypes.UPCOMING) {
+                return new Date(trip.date_start) >= new Date();
+            } else if (orderTripsBy === OrderByTypes.PAST) {
+                return new Date(trip.date_end) < new Date();
+            }
+            return true;
+        });
+    }, [trips, orderTripsBy]);
 
     const displayTrips = () => {
         if (filteredTrips?.length === 0) {

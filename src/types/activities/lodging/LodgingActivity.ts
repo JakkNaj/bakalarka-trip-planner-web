@@ -22,6 +22,9 @@ export const LodgingActivitySchema = BaseActivityTypeSchema.extend({
 
 export type LodgingActivity = z.infer<typeof LodgingActivitySchema>;
 
-
 // --------------- Insert Types ---------------
-export type InsertLodgingType = Omit<LodgingType, 'id' | 'activity_id'>;
+export type InsertLodgingType = Omit<LodgingType, 'id'>;
+
+// --------------- Form Types ---------------
+export const FormLodgingTypeSchema = LodgingTypeSchema.omit({ id: true, activity_id: true });
+export type FormLodgingType = Omit<LodgingType, 'id' | 'activity_id'>;

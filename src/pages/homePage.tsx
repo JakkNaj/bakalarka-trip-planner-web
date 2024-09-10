@@ -53,6 +53,7 @@ export const HomePage = () => {
                         onClose={() => setShowForm(false)}
                         onSubmit={handleSubmit}
                         formError={formError}
+                        submitBtnText="Create Trip"
                     />}
                 <TripsDisplay />
             </Styled.ContentContainer>

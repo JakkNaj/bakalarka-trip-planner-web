@@ -1,28 +1,28 @@
 import {useState} from 'react';
-import {ActivityTypes} from '../types/activities/BaseActivityTypes.ts';
+import {ActivityTypes, InsertBaseActivityType} from '../types/activities/BaseActivityTypes.ts';
 import {GeneralActivityForm} from "./activityTypeForms/GeneralActivityForm.tsx";
 import {FlightActivityForm} from "./activityTypeForms/FlightActivityForm.tsx";
 import {ReminderActivityForm} from "./activityTypeForms/ReminderActivityForm.tsx";
 import {LodgingActivityForm} from "./activityTypeForms/LodgingActivityForm.tsx";
 import {TransportationActivityForm} from "./activityTypeForms/TransportationActivityForm.tsx";
-import { ActivityDetailsType, InsertActivityDetailsType, InsertActivityType } from '../types/activities/ActivitiesTypes.ts';
+import {FormActivityDetailsType} from '../types/activities/ActivitiesTypes.ts';
 
 type ActivityFormProps = {
     onClose: () => void;
-    onSubmit: (newActivity: InsertActivityType) => Promise<void>;
+    onSubmit: (baseDetails: InsertBaseActivityType, typeDetails: FormActivityDetailsType) => Promise<void>;
     tripId: number;
 };
 
 export const NewActivityForm = ({onClose, onSubmit, tripId}: ActivityFormProps) => {
-    const [baseActivityDetails, setBaseActivityDetails] = useState({
+    const [baseActivityDetails, setBaseActivityDetails] = useState<InsertBaseActivityType>({
         trip_id: tripId,
-        name: "" as string,
+        name: '',
         timestamp_start: new Date(),
         timestamp_end: new Date(),
-        activity_details: {},
-        type: '' as ActivityTypes,
-        details: {} as ActivityDetailsType,
+        type: "" as ActivityTypes,
     });
+
+    const [typeActivityDetails, setTypeActivityDetails] = useState<FormActivityDetailsType>({} as FormActivityDetailsType);
 
     const handleActivityTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setBaseActivityDetails({
@@ -38,16 +38,13 @@ export const NewActivityForm = ({onClose, onSubmit, tripId}: ActivityFormProps) 
         });
     };
 
-    const setTypeDetails = (details: InsertActivityDetailsType) => {
-        setBaseActivityDetails({
-            ...baseActivityDetails,
-            activity_details: details,
-        });
+    const setTypeDetails = (details: FormActivityDetailsType) => {
+        setTypeActivityDetails(details);
     }
 
     const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSubmit(baseActivityDetails);
+        onSubmit(baseActivityDetails, typeActivityDetails);
     };
 
     const renderActivityTypeForm = () => {

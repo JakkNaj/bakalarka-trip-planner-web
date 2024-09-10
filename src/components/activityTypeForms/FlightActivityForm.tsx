@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { InsertFlightType } from '../../types/activities/flight/FlightActivity';
+import { FormFlightType } from '../../types/activities/flight/FlightActivity';
 
 type FlightActivityProps = {
-    setDetails: (details: InsertFlightType) => void;
+    setDetails: (details: FormFlightType) => void;
 };
 
 export const FlightActivityForm = ({ setDetails }: FlightActivityProps) => {

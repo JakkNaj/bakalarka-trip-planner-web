@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { FlightActivity, FlightActivitySchema, FlightType, InsertFlightType } from './flight/FlightActivity';
-import { InsertTransportType, TransportationActivity, TransportationActivitySchema, TransportType } from './transport/TransportActivity';
-import { InsertLodgingType, LodgingActivity, LodgingActivitySchema, LodgingType } from './lodging/LodgingActivity';
-import { InsertReminderType, ReminderActivity, ReminderActivitySchema, ReminderType } from './reminder/ReminderActivity';
-import { GeneralActivity, GeneralActivitySchema, GeneralType, InsertGeneralType } from './general/GeneralActivity';
+import { FlightActivity, FlightActivitySchema, FlightType, FormFlightTypeSchema, InsertFlightType } from './flight/FlightActivity';
+import { FormTransportTypeSchema, InsertTransportType, TransportationActivity, TransportationActivitySchema, TransportType } from './transport/TransportActivity';
+import { FormLodgingTypeSchema, InsertLodgingType, LodgingActivity, LodgingActivitySchema, LodgingType } from './lodging/LodgingActivity';
+import { FormReminderTypeSchema, InsertReminderType, ReminderActivity, ReminderActivitySchema, ReminderType } from './reminder/ReminderActivity';
+import { FormGeneralTypeSchema, GeneralActivity, GeneralActivitySchema, GeneralType, InsertGeneralType } from './general/GeneralActivity';
 
 export const ActivityTypeSchema = z.discriminatedUnion("type",[
     FlightActivitySchema,
@@ -29,19 +29,20 @@ export type ActivityDetailsType =
 
 
 // --------------- Insert Types ---------------
-export const InsertActivityTypeSchema = z.union([
-    FlightActivitySchema.omit({ activity_id: true }),
-    TransportationActivitySchema.omit({ activity_id: true }),
-    LodgingActivitySchema.omit({ activity_id: true }),
-    ReminderActivitySchema.omit({ activity_id: true }),
-    GeneralActivitySchema.omit({ activity_id: true }),
-]);
-
-export type InsertActivityType = Omit<ActivityType, 'activity_id'>;
-
 export type InsertActivityDetailsType =
     | InsertFlightType
     | InsertTransportType
     | InsertLodgingType
     | InsertReminderType
     | InsertGeneralType;
+
+// --------------- Form validation Types ---------------
+export const FormActivityDetailsTypeSchema = z.union([
+    FormGeneralTypeSchema,
+    FormFlightTypeSchema,
+    FormTransportTypeSchema,
+    FormLodgingTypeSchema,
+    FormReminderTypeSchema,
+]);
+
+export type FormActivityDetailsType = z.infer<typeof FormActivityDetailsTypeSchema>;

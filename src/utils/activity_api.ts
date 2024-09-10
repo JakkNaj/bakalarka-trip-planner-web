@@ -1,14 +1,14 @@
 import supabase from "../config/supabaseClient.ts";
-import {ActivityDetailsType, ActivityType, InsertActivityType} from "../types/activities/ActivitiesTypes.ts";
-import {ActivityTypes} from "../types/activities/BaseActivityTypes.ts";
-import { FlightType } from "../types/activities/flight/FlightActivity.ts";
-import { GeneralType } from "../types/activities/general/GeneralActivity.ts";
-import { LodgingType } from "../types/activities/lodging/LodgingActivity.ts";
-import { ReminderType } from "../types/activities/reminder/ReminderActivity.ts";
-import { TransportType } from "../types/activities/transport/TransportActivity.ts";
+import { ActivityType, FormActivityDetailsType, InsertActivityDetailsType } from "../types/activities/ActivitiesTypes.ts";
+import { ActivityTypes } from "../types/activities/BaseActivityTypes.ts";
+import { InsertFlightType } from "../types/activities/flight/FlightActivity.ts";
+import { InsertGeneralType } from "../types/activities/general/GeneralActivity.ts";
+import { InsertLodgingType } from "../types/activities/lodging/LodgingActivity.ts";
+import { InsertReminderType } from "../types/activities/reminder/ReminderActivity.ts";
+import { InsertTransportType } from "../types/activities/transport/TransportActivity.ts";
+import { InsertBaseActivityType } from '../types/activities/BaseActivityTypes';
 
-export const insertActivity = async (activity: InsertActivityType) => {
-    const { details: typeDetails, ...baseDetails } = activity;
+export const insertActivity = async (baseDetails: InsertBaseActivityType, typeDetails: FormActivityDetailsType) => {
     const { data, error } = await supabase
         .from('activities')
         .insert([baseDetails])
@@ -19,41 +19,45 @@ export const insertActivity = async (activity: InsertActivityType) => {
         throw new Error(error.message);
     }
 
-    const { activity_id, ...rest } = data as ActivityType;
-    console.log("data: ", data);
+    const { id: activity_id, ...rest } = data;
     const activityData = {...rest, activity_id: activity_id};
+    let returnedTypeDetails;
 
-    switch(activity.type) {
+    switch(baseDetails.type) {
         case ActivityTypes.GENERAL:
-            await insertDetailsActivity({...typeDetails, activity_id: activity_id} as GeneralType, 'general_activities');
+            returnedTypeDetails = await insertDetailsActivity({...typeDetails, activity_id: activity_id} as InsertGeneralType, 'general_activities');
             break;
         case ActivityTypes.FLIGHT:
-            await insertDetailsActivity({...typeDetails, activity_id: activity_id} as FlightType, 'flights');
+            returnedTypeDetails = await insertDetailsActivity({...typeDetails, activity_id: activity_id} as InsertFlightType, 'flights');
             break;
         case ActivityTypes.TRANSPORTATION:
-            await insertDetailsActivity({...typeDetails, activity_id: activity_id} as TransportType, 'transportation');
+            returnedTypeDetails = await insertDetailsActivity({...typeDetails, activity_id: activity_id} as InsertTransportType, 'transportation');
             break;
         case ActivityTypes.LODGING:
-            await insertDetailsActivity({...typeDetails, activity_id: activity_id} as LodgingType, 'lodgings');
+            returnedTypeDetails = await insertDetailsActivity({...typeDetails, activity_id: activity_id} as InsertLodgingType, 'lodgings');
             break;
         case ActivityTypes.REMINDER:
-            await insertDetailsActivity({...typeDetails, activity_id: activity_id} as ReminderType, 'reminders');
+            returnedTypeDetails = await insertDetailsActivity({...typeDetails, activity_id: activity_id} as InsertReminderType, 'reminders');
             break;
         default:
             throw new Error('Invalid activity type.');
     }
 
-    return {...activityData, activity_details: typeDetails};
+    return {...activityData, details: returnedTypeDetails};
 }
 
-const insertDetailsActivity = async (details: ActivityDetailsType, tableName: string) => {
-    const { error } = await supabase
+const insertDetailsActivity = async (details: InsertActivityDetailsType, tableName: string) => {
+    const { data, error } = await supabase
         .from(tableName)
         .insert([details])
+        .select('*')
+        .single();
 
     if (error) {
         throw new Error(error.message);
     }
+
+    return data;
 }
 
 
