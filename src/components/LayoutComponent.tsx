@@ -15,7 +15,6 @@ export const LayoutComponent = () => {
         }
     }, [navigate, user]);
 
-
     return (
         <Styled.PageContainer>
             <Styled.HeaderContainer>

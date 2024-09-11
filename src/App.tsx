@@ -7,6 +7,8 @@ import { PrivateRoute } from './components/PrivateRoute.tsx';
 import { LayoutComponent } from './components/LayoutComponent.tsx';
 import { fetchTrip, fetchTrips } from './utils/trip_api.ts';
 import { fetchActivity } from './utils/activity_api.ts';
+import { useEffect, useState } from 'react';
+import { useStore } from './stores/globalStore.ts';
 
 const router = createBrowserRouter([
         {
@@ -59,6 +61,24 @@ const router = createBrowserRouter([
 );
 
 const App = () => {
+    const [isAppReady, setIsAppReady] = useState(false);
+    const { initializeUser } = useStore();
+
+    useEffect(() => {
+        const initApp = async () => {
+            const success = await initializeUser();
+            if(!success) {
+                console.log('Failed to initialize user');
+            }
+            setIsAppReady(true);
+        }
+        initApp();
+    }, [initializeUser]);
+
+    if (!isAppReady) {
+        return <div>Loading the app...</div>;
+    }
+
     return <RouterProvider router={router} />;
 };
 
