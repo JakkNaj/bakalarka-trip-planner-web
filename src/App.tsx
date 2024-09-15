@@ -76,7 +76,7 @@ const App = () => {
     }, [initializeUser]);
 
     if (!isAppReady) {
-        return <div>Loading the app...</div>;
+        return;
     }
 
     return <RouterProvider router={router} />;

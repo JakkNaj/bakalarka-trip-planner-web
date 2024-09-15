@@ -15,7 +15,7 @@ export const TripsDisplay = () => {
             if (orderTripsBy === OrderByTypes.UPCOMING) {
                 return new Date(trip.date_start) >= new Date();
             } else if (orderTripsBy === OrderByTypes.PAST) {
-                return new Date(trip.date_end) < new Date();
+                return new Date(trip.date_start) < new Date();
             }
             return true;
         });

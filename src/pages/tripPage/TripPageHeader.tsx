@@ -50,7 +50,7 @@ export const TripPageHeader = ({ trip, handleFormSubmit }: TripPageHeaderProps) 
                     submitBtnText='Update Trip'
                 />
             ) : (
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%",gap: "0.8rem" , alignItems: "flex-start"}}>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%",gap: "0.8rem" , alignItems: "flex-start", maxWidth: "60%"}}>
                     <MainButton text="Back to trips" right_after="42%" width_after="30%" onClick={() => navigate('/')}>
                         <Styled.KeyboardBackspaceIcon className="white-backspace"/>
                     </MainButton>
@@ -67,7 +67,7 @@ export const TripPageHeader = ({ trip, handleFormSubmit }: TripPageHeaderProps) 
                     {trip?.description && trip.description.length != 0 &&
                         (
                             <>
-                                <h4 style={{marginTop: 0, marginBottom: "0.4rem", fontFamily: fonts.normal}}>Description</h4>
+                                <h4 style={{marginTop: 0, marginBottom: "0.4rem", fontFamily: fonts.normal, }}>Description</h4>
                                 <Styled.Description>
                                     {trip.description}
                                 </Styled.Description>
@@ -97,6 +97,7 @@ const Styled = {
         flexWrap: "wrap",
         margin: "2rem 0 1rem 0",
         paddingBottom: "2rem",
+        width: "100%",
     }),
     H2: styled.h2({
         fontFamily: fonts.heading,

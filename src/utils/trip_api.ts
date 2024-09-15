@@ -27,7 +27,7 @@ export const fetchTrips = async (): Promise<TripType[]> => {
         const parsedData = TripTypeSchema.array().safeParse(data);
         if (!parsedData.success) {
             console.log('Error parsing data:', fromZodError(parsedData.error));
-            return [];
+            throw new Error('Error parsing data');
         } 
         
         const trips = parsedData.data;
@@ -48,50 +48,56 @@ export const fetchTrips = async (): Promise<TripType[]> => {
 
     } catch (error) {
         console.error('Unexpected error during trip fetching:', error);
-        return [];
+        throw error;
     }
 };
 
 export const fetchTrip = async (id: number): Promise<TripType | null> => {
-    const {data, error} = await supabase
-            .from('trips')
-            .select(`
-                id,
-                created_at,
-                title,
-                description,
-                date_start,
-                date_end,
-                location,
-                trip_activities ( * )
-            `)
-            .eq('id', id)
-            .single();
-        
-    if (error) {
-        console.error('Error fetching trip:', error.message);
-        return null;
-    }
+    try {
+        const {data, error} = await supabase
+        .from('trips')
+        .select(`
+            id,
+            created_at,
+            title,
+            description,
+            date_start,
+            date_end,
+            location,
+            trip_activities ( * )
+        `)
+        .eq('id', id)
+        .single();
+    
+        if (error) {
+            console.error('Error fetching trip:', error.message);
+            throw error;
+        }
 
-    const parsedData = TripTypeSchema.safeParse(data);
-    if (!parsedData.success) {
-        console.error('Error parsing trip data:', fromZodError(parsedData.error));
-        return null;
-    }
+        const parsedData = TripTypeSchema.safeParse(data);
+        if (!parsedData.success) {
+            console.error('Error parsing trip data:', fromZodError(parsedData.error));
+            throw new Error('Error parsing trip data');
+        }
 
-    const trip = parsedData.data;
-    const userId = getState().user?.id;
-    const tripImage = await fetchTripImageUrl(trip.id, userId);
-    if (tripImage) {
-        return {
-            ...trip,
-            imageUrl: tripImage
-        };
+        const trip = parsedData.data;
+        const userId = getState().user?.id;
+        const tripImage = await fetchTripImageUrl(trip.id, userId);
+        if (tripImage) {
+            return {
+                ...trip,
+                imageUrl: tripImage
+            };
+        }
+        return trip;
+    } catch (error) {
+        console.error('Unexpected error during trip fetching:', error);
+        throw error;
     }
-    return trip;
+    
 };
 
-export const fetchTripImageUrl = async (tripId: number, userId: string | undefined): Promise<string | undefined> => {
+const fetchTripImageUrl = async (tripId: number, userId: string | undefined): Promise<string | undefined> => {
     if (!userId) {
         return undefined;
     }
@@ -121,14 +127,14 @@ export const fetchTripImageUrl = async (tripId: number, userId: string | undefin
 
         if (error) {
             console.error("Error fetching public URL", error.message);
-            return undefined;
+            throw error;
         }
 
         return data?.signedUrl || undefined;
 
     } catch (error) {
         console.error("Unexpected error fetching image URL", error);
-        return undefined;
+        throw error;
     }
 };
 
@@ -155,6 +161,7 @@ export const uploadTripImage = async (tripId: number, userId: string | undefined
 
             if (deleteError) {
                 console.error(`Error deleting image: ${deleteError.message}`);
+                throw new Error(`Error deleting image: ${deleteError.message}`);
             }
         }
     }
@@ -173,7 +180,8 @@ export const uploadTripImage = async (tripId: number, userId: string | undefined
     if (url) {
         return url;
     }
-     return null;
+    
+    return null;
 }
 
 export const insertTrip = async (trip: TripInsertType) => {

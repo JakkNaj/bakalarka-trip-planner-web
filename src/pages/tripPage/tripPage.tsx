@@ -9,7 +9,7 @@ import {colors} from "../../assets/colors.ts";
 import {Box} from "@mui/material";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import {TripPageHeader} from "./TripPageHeader.tsx";
-import {VerticalStepper} from "../../components/VerticalStepper.tsx";
+import {VerticalStepper} from "../../components/verticalStepper/VerticalStepper.tsx";
 import { TripType } from '../../types/trip/TripType.ts';
 import { MainButton } from '../../components/MainButton.tsx';
 import { TripEditTypeSchema, TripInsertType } from '../../types/trip/TripInsertType.ts';
@@ -66,7 +66,6 @@ export const TripPage = () => {
         return <p>Loading...</p>;
     }
 
-    console.log('currentTrip', currentTrip);
     return (
         <Styled.PageContainer>
             <TripPageHeader trip={currentTrip} handleFormSubmit={handleNewTripSubmit}/>
