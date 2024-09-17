@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { useStore } from '../../stores/globalStore.ts';
-import { NewActivityForm } from '../../components/NewActivityForm.tsx';
+import { ActivityForm } from '../../components/NewActivityForm.tsx';
 import { insertActivity } from "../../utils/activity_api.ts";
 import {ActivityType, FormActivityDetailsType} from "../../types/activities/ActivitiesTypes.ts";
 import styled from "styled-components";
@@ -15,6 +15,7 @@ import { MainButton } from '../../components/MainButton.tsx';
 import { TripEditTypeSchema, TripInsertType } from '../../types/trip/TripInsertType.ts';
 import { updateTrip } from '../../utils/trip_api.ts';
 import { InsertBaseActivityType } from '../../types/activities/BaseActivityTypes.ts';
+import { fonts } from '../../assets/fonts.ts';
 
 export const TripPage = () => {
     const loadedTrip = useLoaderData() as TripType;
@@ -57,11 +58,6 @@ export const TripPage = () => {
         }
     }, [updateTripStore, loadedTrip]);
 
-    const onAddActivity = () => {
-        //todo
-        console.log('Add activity');
-    };
-
     if (currentTrip === null) {
         return <p>Loading...</p>;
     }
@@ -70,29 +66,25 @@ export const TripPage = () => {
         <Styled.PageContainer>
             <TripPageHeader trip={currentTrip} handleFormSubmit={handleNewTripSubmit}/>
             <Styled.ButtonBox>
-                <MainButton text="Add Activity" right_after="42%" width_after="30%" onClick={onAddActivity} backgroundColor={colors.headerGrey} padding="0.6rem 1rem">
+                <MainButton text="Add Activity" right_after="42%" width_after="30%" onClick={() => setShowNewActivityForm(true)} backgroundColor={colors.headerGrey} padding="0.6rem 1rem">
                     <Styled.AddPlusIcon/>
                 </MainButton>
             </Styled.ButtonBox>
-
-            <button
-                style={{ backgroundColor: 'lightgoldenrodyellow', marginBottom: '20px' }}
-                onClick={() => setShowNewActivityForm(true)}
-            >
-                Plan New Activity
-            </button>
-            {showNewActivityForm && (
-                <NewActivityForm
-                    tripId={loadedTrip.id}
-                    onClose={() => setShowNewActivityForm(false)}
-                    onSubmit={handleAddActivity}
-                />
-            )}
-            {currentTrip.trip_activities && currentTrip.trip_activities.length > 0 ? (
-                <VerticalStepper activities={currentTrip.trip_activities} />
-            ) : (
-                <p>No activities planned yet.</p>
-            )}
+            <h3 style={{fontFamily: fonts.heading, color: colors.mainBlue}}>Activities: click to see details!</h3>
+            <div style={{display: "flex", gap: "1rem", justifyContent: "space-between", alignItems: "flex-start"}}>
+                {currentTrip.trip_activities && currentTrip.trip_activities.length > 0 ? (
+                    <VerticalStepper activities={currentTrip.trip_activities} />
+                ) : (
+                    <p>No activities planned yet.</p>
+                )}
+                {showNewActivityForm && (
+                    <ActivityForm 
+                        tripId={loadedTrip.id}
+                        onClose={() => setShowNewActivityForm(false)}
+                        onSubmit={handleAddActivity}
+                    />
+                )}
+            </div>
         </Styled.PageContainer>
     );
 };
