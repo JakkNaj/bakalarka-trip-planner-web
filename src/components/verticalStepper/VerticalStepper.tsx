@@ -14,6 +14,8 @@ import { LodgingActivityStepContent } from './LodgingActivityStepContent.tsx';
 import { LodgingActivity } from '../../types/activities/lodging/LodgingActivity.ts';
 import { ReminderActivity } from '../../types/activities/reminder/ReminderActivity.ts';
 import { ReminderActivityStepContent } from './ReminderActivityStepContent.tsx';
+import { MainButton } from '../MainButton.tsx';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface VerticalStepperProps {
     activities: ActivityType[];
@@ -59,12 +61,26 @@ export const VerticalStepper = ({ activities }: VerticalStepperProps) => {
                                 fill: colors.white,
                             },
                         }}>
-                        <StepLabel onClick={() => handleStepClick(index)}>
+                        <StepLabel 
+                            onClick={() => handleStepClick(index)}
+                            sx={{
+                                '& .MuiStepLabel-labelContainer span': {
+                                    fontSize: '1rem',
+                                },
+                            }}
+                        >
                             {activity.name + " - " + activity.type}
                         </StepLabel>
                         <StepContent>
                             {getStepContent(activity)}
-                            <button onClick={() => {navigate(`/trip/${activity.trip_id}/activity/${activity.activity_id}`)}}>edit activity</button>
+                            <MainButton 
+                                text="edit" 
+                                right_after="6%" 
+                                width_after="54%" 
+                                onClick={() => navigate(`/trip/${activity.trip_id}/activity/${activity.activity_id}`)} 
+                            >
+                                <EditIcon sx={{color: colors.mainBlue, marginRight: "0.2rem"}}/>
+                            </MainButton>
                         </StepContent>
                     </Step>
                 ))}

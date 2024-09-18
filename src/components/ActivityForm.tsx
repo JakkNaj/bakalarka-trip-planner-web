@@ -7,7 +7,7 @@ import { LodgingActivityForm } from "./activityTypeForms/LodgingActivityForm.tsx
 import { TransportationActivityForm } from "./activityTypeForms/TransportationActivityForm.tsx";
 import { FormActivityDetailsType } from '../types/activities/ActivitiesTypes.ts';
 import styled from 'styled-components';
-import { FormControl, TextField, Select, MenuItem } from '@mui/material';
+import { FormControl, TextField, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { fonts } from "../assets/fonts.ts";
 import { colors } from "../assets/colors.ts";
 import { MainButton } from './MainButton.tsx';
@@ -37,9 +37,10 @@ export const ActivityForm = ({ onClose, onSubmit, tripId }: ActivityFormProps) =
     };
 
     const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
         setBaseActivityDetails({
             ...baseActivityDetails,
-            [e.target.name]: e.target.value,
+            [name]: name.includes('timestamp') ? new Date(value) : value,
         });
     };
 

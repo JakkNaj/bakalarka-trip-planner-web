@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ActivityTypes, BaseActivityTypeSchema } from '../BaseActivityTypes';
 
-const GeneralTypeSchema = z.object({
+export const GeneralTypeSchema = z.object({
     id: z.number(),
     activity_id: z.number(),
     description: z.string().optional(),

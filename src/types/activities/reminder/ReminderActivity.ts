@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ActivityTypes, BaseActivityTypeSchema } from '../BaseActivityTypes';
 
-const ReminderTypeSchema = z.object({
+export const ReminderTypeSchema = z.object({
     id: z.number(),
     activity_id: z.number(),
     reminder_time:z.string().transform((str) => new Date(str)),

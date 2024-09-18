@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { useStore } from '../../stores/globalStore.ts';
-import { ActivityForm } from '../../components/NewActivityForm.tsx';
+import { ActivityForm } from '../../components/ActivityForm.tsx';
 import { insertActivity } from "../../utils/activity_api.ts";
 import {ActivityType, FormActivityDetailsType} from "../../types/activities/ActivitiesTypes.ts";
 import styled from "styled-components";
@@ -39,6 +39,7 @@ export const TripPage = () => {
     const handleAddActivity = useCallback( async (baseDetails: InsertBaseActivityType, typeDetails: FormActivityDetailsType) => {
         // todo add loading state
         const insertedActivity = await insertActivity(baseDetails, typeDetails);
+        console.log("insertedActivity", insertedActivity);
         insertActivityInsideTrip(insertedActivity as ActivityType, loadedTrip.id);
         const currTrip = getTripById(loadedTrip.id);
         if (currTrip) {
