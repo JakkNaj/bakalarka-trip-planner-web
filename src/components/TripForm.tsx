@@ -113,10 +113,9 @@ const Styled = {
         flexDirection: "column",
         alignItems: "flex-start",
         gap: "1rem",
-        padding: "2rem",
         width: "100%",
         maxWidth: "600px",
-        margin: "0 auto",
+        margin: 0,
         "@media (max-width: 768px)": {
             padding: "1rem",
             width: "90%",
