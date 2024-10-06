@@ -127,6 +127,10 @@ const Styled = {
         alignItems: "flex-start",
         padding: "1rem",
         width: "40%",
+        '@media (max-width: 768px)': {
+            width: "90%",
+            padding: "0.5rem",
+        },
     }),
     TextField: styled(TextField)({
         '& .MuiInputBase-root': {
@@ -145,6 +149,9 @@ const Styled = {
         '& .MuiInputLabel-root.Mui-focused': {
             color: colors.mainBlue,
         },
+        '@media (max-width: 768px)': {
+            fontSize: '0.875rem',
+        },
     }),
     Select: styled(Select)({
         '& .MuiInputBase-root': {
@@ -162,6 +169,18 @@ const Styled = {
         },
         '& .MuiInputLabel-root.Mui-focused': {
             color: colors.mainBlue,
+        },
+        '@media (max-width: 768px)': {
+            fontSize: '0.875rem',
+        },
+    }),
+    ButtonContainer: styled.div({
+        display: "flex",
+        gap: "1rem",
+        marginTop: "0.4rem",
+        '@media (max-width: 768px)': {
+            flexDirection: "column",
+            gap: "0.5rem",
         },
     }),
 };

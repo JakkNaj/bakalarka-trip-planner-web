@@ -71,8 +71,8 @@ export const TripPage = () => {
                     <Styled.AddPlusIcon/>
                 </MainButton>
             </Styled.ButtonBox>
-            <h3 style={{fontFamily: fonts.heading, color: colors.mainBlue}}>Activities: click to see details!</h3>
-            <div style={{display: "flex", gap: "1rem", justifyContent: "space-between", alignItems: "flex-start"}}>
+            <h3 style={{fontFamily: fonts.heading, color: colors.mainBlue, marginTop: "2rem"}}>Activities: click to see details!</h3>
+            <Styled.ActivitiesContentContainer>
                 {currentTrip.trip_activities && currentTrip.trip_activities.length > 0 ? (
                     <VerticalStepper activities={currentTrip.trip_activities} />
                 ) : (
@@ -85,7 +85,7 @@ export const TripPage = () => {
                         onSubmit={handleAddActivity}
                     />
                 )}
-            </div>
+            </Styled.ActivitiesContentContainer>
         </Styled.PageContainer>
     );
 };
@@ -93,6 +93,18 @@ export const TripPage = () => {
 const Styled = {
     PageContainer: styled.div({
         padding: "0 4rem",
+        '@media (max-width: 768px)': {
+            padding: "0 2rem",
+        },
+    }),
+    ActivitiesContentContainer: styled.div({
+        display: "flex",
+        gap: "1rem",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        '@media (max-width: 768px)': {
+            flexDirection: "column-reverse",
+        },
     }),
     ButtonBox: styled(Box)({
         position: "relative",
@@ -103,9 +115,15 @@ const Styled = {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        '@media (max-width: 768px)': {
+            height: "0.5rem",
+        },
     }),
     AddPlusIcon: styled(LibraryAddIcon)({
         color: colors.mainBlue,
         marginRight: "0.6rem",
+        '@media (max-width: 768px)': {
+            marginRight: "0.3rem",
+        },
     }), 
 }

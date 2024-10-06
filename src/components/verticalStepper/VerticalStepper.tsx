@@ -16,6 +16,7 @@ import { ReminderActivity } from '../../types/activities/reminder/ReminderActivi
 import { ReminderActivityStepContent } from './ReminderActivityStepContent.tsx';
 import { MainButton } from '../MainButton.tsx';
 import EditIcon from '@mui/icons-material/Edit';
+import styled from 'styled-components';
 
 interface VerticalStepperProps {
     activities: ActivityType[];
@@ -47,7 +48,7 @@ export const VerticalStepper = ({ activities }: VerticalStepperProps) => {
     }    
 
     return (
-        <Box sx={{ maxWidth: "80%" }}>
+        <Styled.Box>
             <Stepper nonLinear activeStep={activeStep} orientation="vertical">
                 {activities.map((activity, index) => (
                     <Step
@@ -85,6 +86,15 @@ export const VerticalStepper = ({ activities }: VerticalStepperProps) => {
                     </Step>
                 ))}
             </Stepper>
-        </Box>
+        </Styled.Box>
     );
 };
+
+const Styled = {
+    Box: styled(Box)({
+        maxWidth: "80%",
+        '@media (max-width: 768px)': {
+            maxWidth: "100%",
+        },
+    }),
+}

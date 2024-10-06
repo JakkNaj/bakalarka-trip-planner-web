@@ -30,7 +30,7 @@ export const HeaderComponent = () => {
                 <Styled.LogoLink to="/">
                     <Styled.Logo src={logoIpsum} alt="Logo" />
                 </Styled.LogoLink>
-                <div>
+                <Styled.NavlinksContainer>
                     <Styled.NavLink
                         to="/"
                         onClick={() => setOrderTripsBy(OrderByTypes.UPCOMING)}
@@ -46,7 +46,7 @@ export const HeaderComponent = () => {
                     >
                         previous trips
                     </Styled.NavLink>
-                </div>
+                </Styled.NavlinksContainer>
                 <Styled.Profile onClick={handleClick}>
                     <Styled.ArrowDown />
                     <MuiAvatar src={avatarUrl} alt="User Avatar" />
@@ -71,6 +71,10 @@ const Styled = {
         padding: "0.4rem 2rem",
         width: "100%",
         maxWidth: "120rem",
+        "@media (max-width: 768px)": {
+            flexDirection: "column",
+            padding: "1rem",
+        },
     }),
     NavLink: styled(Link)({
         fontFamily: fonts.heading,
@@ -84,14 +88,33 @@ const Styled = {
         "&:hover": {
             color: colors.mainBlue,
         },
+        "@media (max-width: 768px)": {
+            fontSize: "1.2rem",
+            padding: "0.8rem",
+        },
+    }),
+    NavlinksContainer: styled.div({
+        display: "flex",
+        alignItems: "center",
+        "@media (max-width: 768px)": {
+            marginBottom: "1rem",
+            order: 2,
+        },
     }),
     Separator: styled.span({
         margin: "0 1.4rem",
         color: colors.mainBlue,
+        "@media (max-width: 768px)": {
+            margin: "0.5rem 0",
+        },
     }),
     LogoLink: styled(Link)({
         display: "flex",
         alignItems: "center",
+        "@media (max-width: 768px)": {
+            order: 1,
+            marginBottom: "0",
+        },
     }),
     Logo: styled.img({
         height: "20px",
@@ -101,11 +124,21 @@ const Styled = {
         alignItems: "center",
         cursor: "pointer",
         position: "relative",
+        "@media (max-width: 768px)": {
+            order: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: "1rem",
+        },
     }),
     ProfileName: styled.span({
         marginLeft: "0.4rem",
         fontFamily: fonts.normal,
         color: colors.mainBlue,
+        "@media (max-width: 768px)": {
+            marginLeft: "0.4rem",
+            marginTop: "0",
+        },
     }),
     ArrowDown: styled(KeyboardArrowDown)({
         padding: "0.2rem",

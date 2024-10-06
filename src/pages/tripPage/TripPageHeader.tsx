@@ -50,7 +50,7 @@ export const TripPageHeader = ({ trip, handleFormSubmit }: TripPageHeaderProps) 
                     submitBtnText='Update Trip'
                 />
             ) : (
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%",gap: "0.8rem" , alignItems: "flex-start", maxWidth: "60%"}}>
+                <Styled.ContentContainer>
                     <MainButton text="Back to trips" right_after="42%" width_after="30%" onClick={() => navigate('/')}>
                         <Styled.KeyboardBackspaceIcon className="white-backspace"/>
                     </MainButton>
@@ -77,7 +77,7 @@ export const TripPageHeader = ({ trip, handleFormSubmit }: TripPageHeaderProps) 
                     <MainButton text="Edit" right_after="10%" width_after="40%" onClick={handleEditTrip}>
                         <Styled.EditIcon className="white-hover" />
                     </MainButton>
-                </div>
+                </Styled.ContentContainer>
             )}
             <TripImage
                     tripId={trip.id}
@@ -98,11 +98,30 @@ const Styled = {
         margin: "2rem 0 1rem 0",
         paddingBottom: "2rem",
         width: "100%",
+        '@media (max-width: 768px)': {
+            margin: "1rem 0 0.5rem 0",
+            justifyContent: "flex-start",
+            width: "100%",
+        },
+    }),
+    ContentContainer: styled.div({
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between", 
+        height: "100%",gap: "0.8rem", 
+        alignItems: "flex-start", 
+        maxWidth: "60%",
+        '@media (max-width: 768px)': {
+            maxWidth: "100%",
+        },
     }),
     H2: styled.h2({
         fontFamily: fonts.heading,
         color: colors.mainBlue,
         margin: 0,
+        '@media (max-width: 768px)': {
+            fontSize: "1.5rem",
+        },
     }),
     Dates: styled.div({
         fontFamily: fonts.title,
@@ -113,6 +132,9 @@ const Styled = {
         alignItems: "center",
         gap: "0.4rem",
         flexWrap: "nowrap",
+        '@media (max-width: 768px)': {
+            gap: "0.2rem",
+        },
     }),
     Description: styled.p({
         fontFamily: fonts.normal,
@@ -124,10 +146,16 @@ const Styled = {
     KeyboardBackspaceIcon: styled(KeyboardBackspaceIcon)({
         color: colors.mainBlue,
         marginRight: "0.6rem",
+        '@media (max-width: 768px)': {
+            marginRight: "0.3rem",
+        },
     }),
     EditIcon: styled(EditNoteIcon)({
         cursor: 'pointer',
         color: colors.mainBlue,
         borderRadius: '10%',
+        '@media (max-width: 768px)': {
+            fontSize: "1.2rem",
+        },
     }),
 };

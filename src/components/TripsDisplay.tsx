@@ -50,6 +50,7 @@ const Styled = {
         flexDirection: "column",
         alignItems: "center",
         width: "100%",
+        gap: "0.4rem",
     }),
 }
 

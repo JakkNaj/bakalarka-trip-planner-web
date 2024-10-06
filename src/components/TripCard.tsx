@@ -56,29 +56,50 @@ const Styled = {
             boxShadow: `-0.1rem 0 0 0 ${colors.mainBlue}`,
         },
         cursor: "pointer",
+        '@media (max-width: 768px)': {
+            padding: '0.5rem 0 0.5rem 0.5rem',
+            marginBottom: '0.5rem',
+            maxHeight: "8rem",
+        },
     }),
     Header: styled.div({
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
         gap: "2rem",
+        '@media (max-width: 768px)': {
+            gap: "1rem",
+        },
     }),
     Title: styled.h2({
         fontFamily: fonts.heading,
         color: colors.mainBlue,
         margin: 0,
+        '@media (max-width: 768px)': {
+            fontSize: "1.2rem",
+        },
     }),
-    Dates: styled.p({
+    Location: styled.div({
         fontFamily: fonts.normal,
         color: colors.normalText,
+        margin: "0.5rem 0",
+        '@media (max-width: 768px)': {
+            fontSize: "0.9rem",
+        },
     }),
-    Location: styled.p({
+    Dates: styled.div({
         fontFamily: fonts.normal,
         color: colors.normalText,
+        margin: "0.5rem 0",
+        '@media (max-width: 768px)': {
+            fontSize: "0.9rem",
+        },
     }),
-
     ArrowRightIcon: styled(KeyboardArrowRightIcon)({
-        marginLeft: "0.5rem",
+        color: colors.mainBlue,
+        fontSize: "1.5rem",
+        '@media (max-width: 768px)': {
+            fontSize: "1rem",
+        },
     }),
-
 };

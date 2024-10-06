@@ -40,8 +40,8 @@ export const HomePage = () => {
         <Styled.PageContainer>
             <Styled.HeadingContainer>
                 {orderTripsBy && orderTripsBy === OrderByTypes.UPCOMING ?
-                    <Styled.H1>Your Upcoming Trips</Styled.H1> :
-                    <Styled.H1>Your Past Trips</Styled.H1>
+                    <Styled.H1>Upcoming Trips</Styled.H1> :
+                    <Styled.H1>Past Trips</Styled.H1>
                 }
                 <MainButton text="Add new Trip" right_after="4%" width_after="48%" onClick={() => setShowForm(true)} >
                     <Styled.KeyboardBackspaceIcon />
@@ -64,11 +64,18 @@ export const HomePage = () => {
 const Styled = {
     PageContainer: styled.div({
        padding: "0 4rem",
+       "@media (max-width: 768px)": {
+           padding: "0 2rem",
+       },
     }),
     H1: styled.h1({
         fontFamily: fonts.heading,
         color: colors.mainBlue,
         margin: 0,
+        "@media (max-width: 768px)": {
+            fontSize: "1.5rem",
+            maxWidth: "50%",
+        },
     }),
     HeadingContainer: styled.div({
         display: "flex",
@@ -76,11 +83,21 @@ const Styled = {
         alignItems: "center",
         gap: "4rem",
         margin: "2rem 0 1.4rem 0",
+        "@media (max-width: 768px)": {
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: "1rem",
+            marginBottom: 0,
+        },
     }),
     ContentContainer: styled.div({
         display: "flex",
         gap: "1rem",
         marginTop: "1rem",
+        "@media (max-width: 768px)": {
+            flexDirection: "column",
+            gap: "0.5rem",
+        },
     }),
     AddTripButton: styled.button({
         border: "none",
@@ -109,6 +126,10 @@ const Styled = {
             "& .white-backspace": {
                 color: colors.white,
             },
+        },
+        "@media (max-width: 768px)": {
+            fontSize: "0.875rem",
+            padding: "0.4rem 0.8rem",
         },
     }),
     KeyboardBackspaceIcon: styled(KeyboardBackspaceIcon)({

@@ -110,11 +110,17 @@ export const TripForm = ({ onClose, onSubmit, formError, formData, submitBtnText
 const Styled = {
     Form: styled.form({
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "flex-start",
         gap: "1rem",
-        padding: "1rem",
-        width: "40%",
+        padding: "2rem",
+        width: "100%",
+        maxWidth: "600px",
+        margin: "0 auto",
+        "@media (max-width: 768px)": {
+            padding: "1rem",
+            width: "90%",
+        },
     }),
     TextField: styled(TextField)({
         '& .MuiInputBase-root': {
@@ -132,6 +138,10 @@ const Styled = {
         },
         '& .MuiInputLabel-root.Mui-focused': {
             color: colors.mainBlue,
+        },
+        "@media (max-width: 768px)": {
+            fontSize: "0.875rem",
+            padding: "0.5rem",
         },
     }),
     AddTripButton: styled(Button)({
@@ -161,9 +171,16 @@ const Styled = {
                 color: colors.white,
             },
         },
+        "@media (max-width: 768px)": {
+            padding: "0.4rem 0.8rem",
+            fontSize: "0.875rem",
+        },
     }),
     PlusIcon: styled(AddIcon)({
         color: colors.mainBlue,
         marginRight: "0.4rem",
+        "@media (max-width: 768px)": {
+            marginRight: "0.2rem",
+        },
     }),
 };
