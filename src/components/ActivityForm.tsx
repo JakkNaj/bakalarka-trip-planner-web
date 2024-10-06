@@ -1,24 +1,30 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityTypes, InsertBaseActivityType } from '../types/activities/BaseActivityTypes.ts';
 import { GeneralActivityForm } from "./activityTypeForms/GeneralActivityForm.tsx";
 import { FlightActivityForm } from "./activityTypeForms/FlightActivityForm.tsx";
 import { ReminderActivityForm } from "./activityTypeForms/ReminderActivityForm.tsx";
 import { LodgingActivityForm } from "./activityTypeForms/LodgingActivityForm.tsx";
 import { TransportationActivityForm } from "./activityTypeForms/TransportationActivityForm.tsx";
-import { FormActivityDetailsType } from '../types/activities/ActivitiesTypes.ts';
+import { ActivityType, FormActivityDetailsType } from '../types/activities/ActivitiesTypes.ts';
 import styled from 'styled-components';
 import { FormControl, TextField, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { fonts } from "../assets/fonts.ts";
 import { colors } from "../assets/colors.ts";
 import { MainButton } from './MainButton.tsx';
+import { FormFlightType } from '../types/activities/flight/FlightActivity.ts';
+import { FormTransportType } from '../types/activities/transport/TransportActivity.ts';
+import { FormLodgingType } from '../types/activities/lodging/LodgingActivity.ts';
+import { FormReminderType } from '../types/activities/reminder/ReminderActivity.ts';
+import { FormGeneralType } from '../types/activities/general/GeneralActivity.ts';
 
 type ActivityFormProps = {
     onClose: () => void;
-    onSubmit: (baseDetails: InsertBaseActivityType, typeDetails: FormActivityDetailsType) => Promise<void>;
+    onSubmit: (baseDetails: InsertBaseActivityType, typeDetails: FormActivityDetailsType) => void;
     tripId: number;
+    editActivity?: ActivityType; // Optional prop for editing an existing activity
 };
 
-export const ActivityForm = ({ onClose, onSubmit, tripId }: ActivityFormProps) => {
+export const ActivityForm = ({ onClose, onSubmit, tripId, editActivity }: ActivityFormProps) => {
     const [baseActivityDetails, setBaseActivityDetails] = useState<InsertBaseActivityType>({
         trip_id: tripId,
         name: '',
@@ -28,6 +34,19 @@ export const ActivityForm = ({ onClose, onSubmit, tripId }: ActivityFormProps) =
     });
 
     const [typeActivityDetails, setTypeActivityDetails] = useState<FormActivityDetailsType>({} as FormActivityDetailsType);
+
+    useEffect(() => {
+        if (editActivity) {
+            setBaseActivityDetails({
+                trip_id: tripId,
+                name: editActivity.name,
+                timestamp_start: new Date(editActivity.timestamp_start),
+                timestamp_end: new Date(editActivity.timestamp_end),
+                type: editActivity.type,
+            });
+            setTypeActivityDetails(editActivity.details);
+        }
+    }, [editActivity, tripId]);
 
     const handleActivityTypeChange = (e: SelectChangeEvent<unknown>) => {
         setBaseActivityDetails({
@@ -44,9 +63,9 @@ export const ActivityForm = ({ onClose, onSubmit, tripId }: ActivityFormProps) =
         });
     };
 
-    const setTypeDetails = (details: FormActivityDetailsType) => {
+    const setTypeDetails = useCallback((details: FormActivityDetailsType) => {
         setTypeActivityDetails(details);
-    }
+    }, []);
 
     const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -54,22 +73,41 @@ export const ActivityForm = ({ onClose, onSubmit, tripId }: ActivityFormProps) =
     };
 
     const renderActivityTypeForm = () => {
-        switch (baseActivityDetails.type) {
-            case ActivityTypes.FLIGHT:
-                return <FlightActivityForm setDetails={setTypeDetails} />;
-            case ActivityTypes.TRANSPORTATION:
-                return <TransportationActivityForm setDetails={setTypeDetails} />;
-            case ActivityTypes.LODGING:
-                return <LodgingActivityForm setDetails={setTypeDetails} />;
-            case ActivityTypes.REMINDER:
-                return <ReminderActivityForm setDetails={setTypeDetails} />;
-            case ActivityTypes.GENERAL:
-                return <GeneralActivityForm setDetails={setTypeDetails} />;
-            default:
-                console.error('Invalid activity type');
-                return null;
+        if (!editActivity){
+            switch (baseActivityDetails.type) {
+                case ActivityTypes.FLIGHT:
+                    return <FlightActivityForm setDetails={setTypeDetails} />;
+                case ActivityTypes.TRANSPORTATION:
+                    return <TransportationActivityForm setDetails={setTypeDetails} />;
+                case ActivityTypes.LODGING:
+                    return <LodgingActivityForm setDetails={setTypeDetails} />;
+                case ActivityTypes.REMINDER:
+                    return <ReminderActivityForm setDetails={setTypeDetails} />;
+                case ActivityTypes.GENERAL:
+                    return <GeneralActivityForm setDetails={setTypeDetails} />;
+                default:
+                    console.error('Invalid activity type');
+                    return null;
+            }
+        } else {
+            switch (baseActivityDetails.type) {
+                case ActivityTypes.FLIGHT:
+                    return <FlightActivityForm setDetails={setTypeDetails} editActivity={typeActivityDetails as FormFlightType || undefined} />;
+                case ActivityTypes.TRANSPORTATION:
+                    return <TransportationActivityForm setDetails={setTypeDetails} editActivity={typeActivityDetails as FormTransportType || undefined} />;
+                case ActivityTypes.LODGING:
+                    return <LodgingActivityForm setDetails={setTypeDetails} editActivity={typeActivityDetails as FormLodgingType || undefined} />;
+                case ActivityTypes.REMINDER:
+                    return <ReminderActivityForm setDetails={setTypeDetails} editActivity={typeActivityDetails as FormReminderType || undefined} />;
+                case ActivityTypes.GENERAL:
+                    return <GeneralActivityForm setDetails={setTypeDetails} editActivity={typeActivityDetails as FormGeneralType || undefined} />;
+                default:
+                    console.error('Invalid activity type');
+                    return null;
+            }
         }
-    }
+        
+    };
 
     return (
         <Styled.Form onSubmit={handleSubmit}>

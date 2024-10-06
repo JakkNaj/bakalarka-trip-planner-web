@@ -1,10 +1,10 @@
 import supabase from "../config/supabaseClient.ts";
-import { ActivityTypeSchema, FormActivityDetailsType, InsertActivityDetailsType } from "../types/activities/ActivitiesTypes.ts";
+import { ActivityType, ActivityTypeSchema, FormActivityDetailsType, InsertActivityDetailsType } from "../types/activities/ActivitiesTypes.ts";
 import { ActivityTypes } from "../types/activities/BaseActivityTypes.ts";
-import { FlightActivitySchema, FlightTypeSchema, InsertFlightType } from "../types/activities/flight/FlightActivity.ts";
+import { FlightTypeSchema, InsertFlightType } from "../types/activities/flight/FlightActivity.ts";
 import { GeneralTypeSchema, InsertGeneralType } from "../types/activities/general/GeneralActivity.ts";
-import { InsertLodgingType, LodgingActivitySchema, LodgingTypeSchema } from "../types/activities/lodging/LodgingActivity.ts";
-import { InsertReminderType, ReminderActivitySchema, ReminderTypeSchema } from "../types/activities/reminder/ReminderActivity.ts";
+import { InsertLodgingType, LodgingTypeSchema } from "../types/activities/lodging/LodgingActivity.ts";
+import { InsertReminderType, ReminderTypeSchema } from "../types/activities/reminder/ReminderActivity.ts";
 import { InsertTransportType, TransportTypeSchema } from "../types/activities/transport/TransportActivity.ts";
 import { InsertBaseActivityType, BaseActivityTypeSchema } from '../types/activities/BaseActivityTypes';
 
@@ -73,6 +73,93 @@ const insertDetailsActivity = async (details: InsertActivityDetailsType, tableNa
     const { data, error } = await supabase
         .from(tableName)
         .insert([details])
+        .select('*')
+        .single();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return data;
+}
+
+
+export const updateActivity = async (activity: ActivityType) => {
+
+    const { details, activity_id : act_id,  ...base } = activity;
+    const typeDetails = details;
+    const baseDetails = {
+        id: act_id,
+        ...base,
+    }
+    console.log("baseDetails", baseDetails);
+
+    const { data, error } = await supabase
+        .from('activities')
+        .update(baseDetails)
+        .eq('id', baseDetails.id)
+        .select('*')
+        .single();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    console.log("data after base update", data);
+
+    const renamedData = { ...data, activity_id: data.id };
+    delete renamedData.id;
+
+    const parsedData = BaseActivityTypeSchema.safeParse(renamedData);
+    if (!parsedData.success){
+        console.error("error parsing base activity details", parsedData.error);
+        throw new Error('Error parsing base activity details');
+    }
+    console.log("parsedData after update", parsedData);
+
+    const { activity_id, ...rest } = parsedData.data;
+    const activityData = {...rest, activity_id: activity_id};
+    let returnedTypeDetails;
+    let parsedDetails;
+
+    switch(baseDetails.type) {
+        case ActivityTypes.GENERAL:
+            returnedTypeDetails = await updateDetailsActivity({...typeDetails, activity_id: activity_id} as InsertGeneralType, 'general_activities');
+            parsedDetails = GeneralTypeSchema.safeParse(returnedTypeDetails);
+            break;
+        case ActivityTypes.FLIGHT:
+            returnedTypeDetails = await updateDetailsActivity({...typeDetails, activity_id: activity_id} as InsertFlightType, 'flights');
+            parsedDetails = FlightTypeSchema.safeParse(returnedTypeDetails);
+            break;
+        case ActivityTypes.TRANSPORTATION:
+            returnedTypeDetails = await updateDetailsActivity({...typeDetails, activity_id: activity_id} as InsertTransportType, 'transportation');
+            parsedDetails = TransportTypeSchema.safeParse(returnedTypeDetails);
+            break;
+        case ActivityTypes.LODGING:
+            returnedTypeDetails = await updateDetailsActivity({...typeDetails, activity_id: activity_id} as InsertLodgingType, 'lodgings');
+            parsedDetails = LodgingTypeSchema.safeParse(returnedTypeDetails);
+            break;
+        case ActivityTypes.REMINDER:
+            returnedTypeDetails = await updateDetailsActivity({...typeDetails, activity_id: activity_id} as InsertReminderType, 'reminders');
+            parsedDetails = ReminderTypeSchema.safeParse(returnedTypeDetails);
+            break;
+        default:
+            throw new Error('Invalid activity type.');
+    }
+
+    if (!parsedDetails.success) {
+        console.error("error parsing activity details", parsedDetails.error);
+        throw new Error('Error parsing activity details');
+    }
+
+    return {...activityData, details: parsedDetails?.data};
+}
+
+const updateDetailsActivity = async (details: InsertActivityDetailsType, tableName: string) => {
+    const { data, error } = await supabase
+        .from(tableName)
+        .update(details)
+        .eq('activity_id', details.activity_id)
         .select('*')
         .single();
 

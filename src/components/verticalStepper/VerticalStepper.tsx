@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Box, Stepper, Step, StepLabel, StepContent, Typography } from '@mui/material';
 import { ActivityType } from '../../types/activities/ActivitiesTypes.ts';
 import {colors} from "../../assets/colors.ts";
-import { useNavigate } from 'react-router-dom';
 import { GeneralActivityStepContent } from './GeneralActivityStepContent.tsx';
 import { ActivityTypes } from '../../types/activities/BaseActivityTypes.ts';
 import { GeneralActivity } from '../../types/activities/general/GeneralActivity.ts';
@@ -20,10 +19,10 @@ import styled from 'styled-components';
 
 interface VerticalStepperProps {
     activities: ActivityType[];
+    onEditActivity: (activity: ActivityType) => void;
 }
 
-export const VerticalStepper = ({ activities }: VerticalStepperProps) => {
-    const navigate = useNavigate();
+export const VerticalStepper = ({ activities, onEditActivity }: VerticalStepperProps) => {
     const [activeStep, setActiveStep] = useState<number>(0);
 
     const handleStepClick = (index: number) => {
@@ -45,7 +44,7 @@ export const VerticalStepper = ({ activities }: VerticalStepperProps) => {
             default:
                 return <Typography>Activity type not supported</Typography>;
         }
-    }    
+    };  
 
     return (
         <Styled.Box>
@@ -78,7 +77,7 @@ export const VerticalStepper = ({ activities }: VerticalStepperProps) => {
                                 text="edit" 
                                 right_after="6%" 
                                 width_after="54%" 
-                                onClick={() => navigate(`/trip/${activity.trip_id}/activity/${activity.activity_id}`)} 
+                                onClick={() => onEditActivity(activity)} 
                             >
                                 <EditIcon sx={{color: colors.mainBlue, marginRight: "0.2rem"}}/>
                             </MainButton>

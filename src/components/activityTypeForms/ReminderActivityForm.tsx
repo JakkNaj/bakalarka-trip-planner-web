@@ -7,11 +7,12 @@ import { colors } from "../../assets/colors";
 
 type ReminderActivityFormProps = {
     setDetails: (details: FormReminderType) => void;
+    editActivity?: FormReminderType;
 };
 
-export const ReminderActivityForm = ({ setDetails }: ReminderActivityFormProps) => {
-    const [reminderTime, setReminderTime] = useState('');
-    const [note, setNote] = useState('');
+export const ReminderActivityForm = ({ setDetails, editActivity }: ReminderActivityFormProps) => {
+    const [reminderTime, setReminderTime] = useState(editActivity?.reminder_time.toISOString().slice(0, 16) || '');
+    const [note, setNote] = useState(editActivity?.note || '');
 
     useEffect(() => {
         setDetails({

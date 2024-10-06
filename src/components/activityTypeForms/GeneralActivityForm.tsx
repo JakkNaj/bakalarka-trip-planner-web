@@ -7,11 +7,12 @@ import { colors } from "../../assets/colors";
 
 type GeneralActivityFormProps = {
     setDetails: (details: FormGeneralType) => void;
+    editActivity?: FormGeneralType;
 };
 
-export const GeneralActivityForm = ({ setDetails }: GeneralActivityFormProps) => {
-    const [description, setDescription] = useState('');
-    const [location, setLocation] = useState('');
+export const GeneralActivityForm = ({ setDetails, editActivity }: GeneralActivityFormProps) => {
+    const [description, setDescription] = useState(editActivity?.description || '');
+    const [location, setLocation] = useState(editActivity?.location || '');
 
     useEffect(() => {
         setDetails({

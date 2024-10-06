@@ -7,15 +7,16 @@ import { colors } from "../../assets/colors";
 
 type FlightActivityProps = {
     setDetails: (details: FormFlightType) => void;
+    editActivity?: FormFlightType;
 };
 
-export const FlightActivityForm = ({ setDetails }: FlightActivityProps) => {
-    const [flightNumber, setFlightNumber] = useState('');
-    const [departureAirport, setDepartureAirport] = useState('');
-    const [arrivalAirport, setArrivalAirport] = useState('');
-    const [departureTime, setDepartureTime] = useState('');
-    const [arrivalTime, setArrivalTime] = useState('');
-    const [airline, setAirline] = useState('');
+export const FlightActivityForm = ({ setDetails, editActivity }: FlightActivityProps) => {
+    const [flightNumber, setFlightNumber] = useState(editActivity?.flight_number || '');
+    const [departureAirport, setDepartureAirport] = useState(editActivity?.departure_airport || '');
+    const [arrivalAirport, setArrivalAirport] = useState(editActivity?.arrival_airport || '');
+    const [departureTime, setDepartureTime] = useState(editActivity?.departure_time.toISOString().slice(0, 16) || '');
+    const [arrivalTime, setArrivalTime] = useState(editActivity?.arrival_time.toISOString().slice(0, 16) || '');
+    const [airline, setAirline] = useState(editActivity?.airline || '');
 
     useEffect(() => {
         const updateDetails = () => {
@@ -28,7 +29,6 @@ export const FlightActivityForm = ({ setDetails }: FlightActivityProps) => {
                 airline,
             });
         };
-
         updateDetails();
     }, [flightNumber, departureAirport, arrivalAirport, departureTime, arrivalTime, airline, setDetails]);
 

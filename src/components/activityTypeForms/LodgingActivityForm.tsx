@@ -7,15 +7,17 @@ import { colors } from "../../assets/colors";
 
 type LodgingActivityFormProps = {
     setDetails: (details: FormLodgingType) => void;
+    editActivity?: FormLodgingType;
 };
 
-export const LodgingActivityForm = ({ setDetails }: LodgingActivityFormProps) => {
-    const [lodgingName, setLodgingName] = useState('');
-    const [checkInTime, setCheckInTime] = useState('');
-    const [checkOutTime, setCheckOutTime] = useState('');
-    const [address, setAddress] = useState('');
-    const [contactNumber, setContactNumber] = useState('');
-    const [reservationNumber, setReservationNumber] = useState('');
+export const LodgingActivityForm = ({ setDetails, editActivity }: LodgingActivityFormProps) => {
+    const [lodgingName, setLodgingName] = useState(editActivity?.lodging_name || '');
+    const [checkInTime, setCheckInTime] = useState(editActivity?.check_in_time.toISOString().slice(0, 16) || '');
+    const [checkOutTime, setCheckOutTime] = useState(editActivity?.check_out_time.toISOString().slice(0, 16) || '');
+    const [address, setAddress] = useState(editActivity?.address || '');
+    const [contactNumber, setContactNumber] = useState(editActivity?.contact_number || '');
+    const [reservationNumber, setReservationNumber] = useState(editActivity?.reservation_number || '');
+
 
     useEffect(() => {
         setDetails({

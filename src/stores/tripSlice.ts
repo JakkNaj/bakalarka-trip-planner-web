@@ -14,6 +14,7 @@ export interface tripSlice {
     getTripById: (tripId: number) => TripType | undefined;
     reset: () => void;
     insertActivityInsideTrip: (activity: ActivityType, tripId: number) => void;
+    updateActivityInsideTrip: (activity: ActivityType, tripId: number) => void;
     setTripImage: (tripId: number, url: string) => void;
 }
 
@@ -62,6 +63,19 @@ export const createTripSlice: StateCreator<tripSlice, [], [], tripSlice> = (set,
                 if (activityIndex === -1) {
                     trip.trip_activities.push(activity);
                 } else {
+                    trip.trip_activities[activityIndex] = activity;
+                }
+            }
+            return { trips: [...state.trips] };
+        });
+    },
+
+    updateActivityInsideTrip: (activity: ActivityType, tripId: number) => {
+        set((state) => {
+            const trip = state.trips.find((trip) => trip.id === tripId);
+            if (trip && trip.trip_activities) {
+                const activityIndex = trip.trip_activities.findIndex((a) => a.activity_id === activity.activity_id);
+                if (activityIndex !== -1) {
                     trip.trip_activities[activityIndex] = activity;
                 }
             }

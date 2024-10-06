@@ -37,6 +37,7 @@ const router = createBrowserRouter([
                     ),
                 },
                 {
+                    //not used route
                     path: '/trip/:tripId/activity/:activityId',
                     loader: async ({params}) => {
                         if (!params.activityId) {

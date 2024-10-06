@@ -7,15 +7,16 @@ import { colors } from "../../assets/colors";
 
 type TransportationActivityFormProps = {
     setDetails: (details: FormTransportType) => void;
+    editActivity?: FormTransportType;
 };
 
-export const TransportationActivityForm = ({ setDetails }: TransportationActivityFormProps) => {
-    const [transportType, setTransportType] = useState('');
-    const [departureLocation, setDepartureLocation] = useState('');
-    const [arrivalLocation, setArrivalLocation] = useState('');
-    const [departureTime, setDepartureTime] = useState('');
-    const [arrivalTime, setArrivalTime] = useState('');
-    const [provider, setProvider] = useState('');
+export const TransportationActivityForm = ({ setDetails, editActivity }: TransportationActivityFormProps) => {
+    const [transportType, setTransportType] = useState(editActivity?.transport_type || '');
+    const [departureLocation, setDepartureLocation] = useState(editActivity?.departure_location || '');
+    const [arrivalLocation, setArrivalLocation] = useState(editActivity?.arrival_location || '');
+    const [departureTime, setDepartureTime] = useState(editActivity?.departure_time.toISOString().slice(0, 16) || '');
+    const [arrivalTime, setArrivalTime] = useState(editActivity?.arrival_time.toISOString().slice(0, 16) || '');
+    const [provider, setProvider] = useState(editActivity?.provider || '');
 
     const onEditField = (fieldSetter: (value: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
         fieldSetter(e.target.value);
